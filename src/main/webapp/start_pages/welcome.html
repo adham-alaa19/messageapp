@@ -1,0 +1,109 @@
+  <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Messenger Client</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #d1d3d4;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #0d6efd;
+            position: relative;
+            padding-right: 20px;
+        }
+        .navbar-brand::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 10%;
+            height: 80%;
+            width: 1px;
+            background-color: black;
+        }
+        .navbar-nav .nav-link {
+            color: #0d6efd;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #0056b3;
+        }
+        .hero {
+            background-color: #d1d3d4;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .hero h1 {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+        .hero p {
+            color: #333;
+            font-size: 1.2rem;
+        }
+        .card {
+            border-radius: 1rem;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">Messenger Client</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="register">Register</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Welcome to Messenger Client</h1>
+        <p>Your all-in-one solution for secure and reliable messaging.</p>
+    </div>
+</section>
+
+<!-- Introduction Section -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4">
+                <h2 class="text-center mb-3">Why Choose Us?</h2>
+                <p>Messenger Client is designed to provide you with seamless communication across multiple platforms. Whether you're an individual or a business, our app ensures secure, reliable, and fast messaging to keep you connected.</p>
+                <ul>
+                    <li>Send and receive messages instantly</li>
+                    <li>Support for multiple SMS providers (Twilio, Pivilio, and more)</li>
+                    <li>Secure and encrypted communication</li>
+                    <li>User-friendly interface</li>
+                    <li>Real-time message status tracking</li>
+                </ul>
+                <div class="text-center mt-4">
+                    <a href="register" class="btn btn-primary">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

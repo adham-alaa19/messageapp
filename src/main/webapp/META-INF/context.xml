@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<Context path="/MessageMavenProject"/>-->
+
+<Context path="/MessagerClient">
+    <Resource name="jdbc/myDB"
+              auth="Container"
+              type="javax.sql.DataSource"
+              maxTotal="20"
+              maxIdle="10"
+              maxWaitMillis="10000"
+              username="postgres"
+              password="12345"
+              driverClassName="org.postgresql.Driver"
+              url="jdbc:postgresql://localhost:5432/messaging_app"/>
+</Context>
+

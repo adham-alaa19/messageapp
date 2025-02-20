@@ -1,0 +1,331 @@
+
+package com.iti.database.psql;
+
+import com.iti.database.DB_Condition;
+import com.iti.database.DB_Handler;
+import java.lang.reflect.Field;
+import java.util.Map;
+ import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
+public class Psql_Handler implements DB_Handler {
+    private DataSource dataSource;
+    private Connection connection;
+
+    @Override
+    public void connect() {
+        if (dataSource == null) {
+            try {
+                Context ctx = new InitialContext();
+                dataSource = (DataSource) ctx.lookup("java:/comp/env/jdbc/myDB");
+            } catch (NamingException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Failed to connect to DataSource");
+            }
+        }
+        
+        try {
+            connection = dataSource.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to get a connection from DataSource");
+        }
+    }
+
+    @Override
+    public void disconnect() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean isConnected() {
+        try {
+            return connection != null && !connection.isClosed();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+ @Override
+public <T> T create(T entity) {
+    Class<?> myClass = entity.getClass();
+    String tableName = myClass.getSimpleName();
+    String columns = "(";
+    String placeholder = "(";
+    List<Object> values = new ArrayList<>();
+    
+    Field[] fields = myClass.getDeclaredFields();
+    boolean firstColumn = true;
+    for (int i = 0; i < fields.length; i++) {
+        fields[i].setAccessible(true);
+        try {
+            Object value = fields[i].get(entity);
+            if (value != null) {
+                if (!firstColumn) {
+                    columns += ", ";
+                    placeholder += ", ";
+                } else {
+                    firstColumn = false;
+                }
+                columns += fields[i].getName();
+                // If the field is a composite, use its placeholder and add each value from getValues()
+                if (value instanceof PsqlComposite) {
+                    PsqlComposite comp = (PsqlComposite) value;
+                    placeholder += comp.toRowPlaceHolder();
+                    Map<String, Object> compValues = comp.getValues();
+                    for (Object compVal : compValues.values()) {
+                        values.add(compVal);
+                    }
+                } else {
+                    placeholder += "?";
+                    values.add(value);
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Failed to access field: " + fields[i].getName(), e);
+        }
+    }
+    columns += ")";
+    placeholder += ")";
+    
+    String query = "INSERT INTO " + tableName + " " + columns + " VALUES " + placeholder + " RETURNING *";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        for (int i = 0; i < values.size(); i++) {
+            stmt.setObject(i + 1, values.get(i));
+        }
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    try {
+                        Object dbValue = rs.getObject(field.getName());
+                        if (dbValue != null) {
+                            field.set(entity, dbValue);
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("Failed to set field: " + field.getName(), e);
+                    }
+                }
+            }
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Error inserting entity", e);
+    }
+    
+    return entity;
+}
+
+@Override
+public <T> T updateByValue(T entity, String whereColumn, DB_Condition condition, Object conditionValue) {
+    Class<?> myClass = entity.getClass();
+    String tableName = myClass.getSimpleName();
+    String setClause = "";
+    List<Object> values = new ArrayList<>();
+    Field[] fields = myClass.getDeclaredFields();
+    boolean firstField = true;
+    for (Field field : fields) {
+        field.setAccessible(true);
+        try {
+            Object fieldValue = field.get(entity);
+            if (fieldValue != null) {
+                if (!firstField) {
+                    setClause += ", ";
+                } else {
+                    firstField = false;
+                }
+                setClause += field.getName() + "=";
+                if (fieldValue instanceof PsqlComposite) {
+                    PsqlComposite comp = (PsqlComposite) fieldValue;
+                    setClause += comp.toRowPlaceHolder();
+                    Map<String, Object> compValues = comp.getValues();
+                    for (Object compVal : compValues.values()) {
+                        values.add(compVal);
+                    }
+                } else {
+                    setClause += "?";
+                    values.add(fieldValue);
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Failed to access field: " + field.getName(), e);
+        }
+    }
+    
+    String query = "UPDATE " + tableName + " SET " + setClause 
+            + " WHERE " + whereColumn + " " + condition.getOperator() + " ? RETURNING *";
+    
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        int idx = 1;
+        for (Object val : values) {
+            stmt.setObject(idx++, val);
+        }
+        stmt.setObject(idx, conditionValue);
+        
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    try {
+                        Object dbValue = rs.getObject(field.getName());
+                        if (dbValue != null) {
+                            field.set(entity, dbValue);
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException("Failed to set field: " + field.getName(), e);
+                    }
+                }
+            }
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Error updating entity", e);
+    }
+    
+    return entity;
+}
+ @Override
+public <T> List<T> readAll(Class<T> myClass) {
+    List<T> results = new ArrayList<>();
+    String tableName = myClass.getSimpleName();
+    String query = "SELECT * FROM " + tableName; 
+    try (PreparedStatement stmt = connection.prepareStatement(query);
+         ResultSet rs = stmt.executeQuery()) {
+         Field[] fields = myClass.getDeclaredFields();
+         while (rs.next()) {
+             T entity = myClass.getDeclaredConstructor().newInstance();
+             for (Field field : fields) {
+                 field.setAccessible(true);
+                 if (PsqlComposite.class.isAssignableFrom(field.getType())) {
+                     String compStr = rs.getString(field.getName());
+                     if (compStr != null) {
+                         Object compInstance = PSQLCompositeHelper.parseComposite(compStr, field.getType());
+                         field.set(entity, compInstance);
+                     }
+                 } else {
+                     Object dbValue = rs.getObject(field.getName());
+                     if (dbValue != null) {
+                         field.set(entity, dbValue);
+                     }
+                 }
+             }
+             results.add(entity);
+         }
+    } catch (SQLException | ReflectiveOperationException e) {
+         throw new RuntimeException("Error reading all entities", e);
+    }
+    
+    return results;
+}
+
+
+@Override
+public <T> List<T> readByValue(Class<T> tableClass, String column, DB_Condition condition, Object value) {
+    List<T> results = new ArrayList<>();
+    String tableName = tableClass.getSimpleName();
+    String query = "SELECT * FROM " + tableName + " WHERE " + column + " " + condition.getOperator() + " ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        stmt.setObject(1, value);
+        try (ResultSet rs = stmt.executeQuery()) {
+            Field[] fields = tableClass.getDeclaredFields();
+            while (rs.next()) {
+                T entity = tableClass.getDeclaredConstructor().newInstance();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    if (PsqlComposite.class.isAssignableFrom(field.getType())) {
+                        String compStr = rs.getString(field.getName());
+                        if (compStr != null) {
+                            Object compInstance = PSQLCompositeHelper.parseComposite(compStr, field.getType());
+                            field.set(entity, compInstance);
+                        }
+                    } else {
+                        Object dbValue = rs.getObject(field.getName());
+                        if (dbValue != null) {
+                            field.set(entity, dbValue);
+                        }
+                    }
+                }
+                results.add(entity);
+            }
+        }
+    } catch (SQLException | ReflectiveOperationException e) {
+        throw new RuntimeException("Error reading entity by value", e);
+    }
+    return results;
+}
+
+
+
+  @Override
+public boolean deleteByValue(Class<?> myClass, String column, DB_Condition condition, Object value) {
+    String tableName = myClass.getSimpleName();
+    String query = "DELETE FROM " + tableName + " WHERE " + column + " " + condition.getOperator() + " ?";
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        stmt.setObject(1, value);
+        int affectedRows = stmt.executeUpdate();
+        return affectedRows > 0;
+    } catch (SQLException e) {
+        throw new RuntimeException("Error deleting entity", e);
+    }
+}
+ 
+        @Override
+    public void executeQuery(String query) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error executing query: " + query, e);
+        }
+    }
+    
+   @Override
+   public <T >List<Map<String, Object>> executeSelectQuery(String query, Class<T> tableClass) {
+    List<Map<String, Object>> rows = new ArrayList<>();
+    try (PreparedStatement stmt = connection.prepareStatement(query);
+         ResultSet rs = stmt.executeQuery()) {
+        
+        Field[] fields = tableClass.getDeclaredFields();
+        while (rs.next()) {
+            Map<String, Object> row = new LinkedHashMap<>();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                String columnName = field.getName();
+                Object dbValue = rs.getObject(columnName);
+                
+                if (PsqlComposite.class.isAssignableFrom(field.getType())) {
+                    String compStr = rs.getString(columnName);
+                    if (compStr != null) {
+                        dbValue = PSQLCompositeHelper.parseComposite(compStr, field.getType());
+                    }
+                }
+                row.put(columnName, dbValue);
+            }
+            rows.add(row);
+        }
+    } catch (SQLException | ReflectiveOperationException e) {
+        throw new RuntimeException("Error executing select query: " + query, e);
+    }
+    return rows;
+}
+
+
+
+
+}
