@@ -2,6 +2,7 @@ package com.iti.managers;
 
 
 import com.iti.database.DB_Handler;
+import com.iti.database.SQL_Condition;
 import com.iti.database.psql.Psql_Handler;
 import com.iti.models.IUser;
 import com.iti.models.Customer;
@@ -13,7 +14,7 @@ import java.util.Map;
 
 public class UserManager {
 
-    public IUser getUser(String mail, String password) {
+    public IUser getUser2(String mail, String password) {
         DB_Handler dbHandler = new Psql_Handler();
         dbHandler.connect();
         try {
@@ -49,6 +50,35 @@ public class UserManager {
         }
         return null;
     }
+    
+    
+     public IUser getUser(String mail, String password) {
+        DB_Handler dbHandler = new Psql_Handler();
+        IUser user=null ;
+        List<Customer> userList=null;
+        List<Admin> adminList=null;
+        dbHandler.connect();
+               userList = (List<Customer>) dbHandler.readByValue(Customer.class, "email", SQL_Condition.EQUAL, mail);   
+               if (!userList.isEmpty() )
+               {if(userList.get(0).getPassword().equals(password))  user=userList.get(0);}
+               else{
+               adminList = (List<Admin>) dbHandler.readByValue(Admin.class, "email", SQL_Condition.EQUAL, mail);
+               if (!adminList.isEmpty()  )
+               if(adminList.get(0).getPassword().equals(password)) 
+                   user=adminList.get(0);
+               }
+         dbHandler.disconnect();
+         return user;
+    }
+     
+     
+         public void createUser(IUser user) {
+             DB_Handler dbHandler = new Psql_Handler();
+             dbHandler.connect();
+             dbHandler.create(user);
+             dbHandler.disconnect();
+    }
+
 
 
     public boolean isAdmin(IUser user) {

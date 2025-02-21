@@ -15,7 +15,7 @@ public class Customer implements IUser {
     private String email;
     private Address address;
     private String msisdn;
-    private List<MessageApiInfo> apiInfos; 
+    //private List<MessageApiInfo> apiInfos; 
     private Boolean is_valid;
 
     public int getId() { return customer_id; }
@@ -55,11 +55,11 @@ public class Customer implements IUser {
     public boolean isIs_valid() { return is_valid; }
     public void setIs_valid(boolean is_valid) { this.is_valid = is_valid; }
     
-        public List<MessageApiInfo> getApiInfos() {
-        return apiInfos;
-    }
-
-    public void setApiInfos(List<MessageApiInfo> apiInfos) {
-        this.apiInfos = apiInfos;
-    }
+//        public List<MessageApiInfo> getApiInfos() {
+//        return apiInfos;
+//    }
+//
+//    public void setApiInfos(List<MessageApiInfo> apiInfos) {
+//        this.apiInfos = apiInfos;
+//    }
 }

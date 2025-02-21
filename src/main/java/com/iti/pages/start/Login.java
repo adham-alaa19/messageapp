@@ -21,16 +21,14 @@ public class Login extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
                  try (PrintWriter out = response.getWriter()) {
-      if(SessionManager.isLoggedIn(request))   response.sendRedirect("homesession");
-      request.getRequestDispatcher("start_pages/login.html").include(request, response);
+      if(SessionManager.isLoggedIn(request))   response.sendRedirect("adminhome");
+      request.getRequestDispatcher("pages/start_pages/login.html").include(request, response);
       String s= request.getParameter("NotFound");
       String s2= request.getParameter("Logged");
       if("False".equalsIgnoreCase(s2))
                 out.println("<h3 style=\"color=red;\"> Please Log In First</h3>");
       else if("True".equalsIgnoreCase(s))
                 out.println("<h3 style=\"color=red;\"> User Not Exist</h3>");
-            request.getRequestDispatcher("includes/footer.html").include(request, response);
-
          } catch(Exception e) {
              e.printStackTrace();
          }
@@ -45,7 +43,6 @@ public class Login extends HttpServlet {
       System.out.println(user);
       if(user!=null) 
       {
-       
        HttpSession mySession = request.getSession(true);
        mySession.setAttribute("user", user);
        if(usrmanager.isAdmin(user))

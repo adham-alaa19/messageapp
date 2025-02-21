@@ -24,12 +24,11 @@ public class Register extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
           try (PrintWriter out = response.getWriter()) {
-      if(SessionManager.isLoggedIn(request))   response.sendRedirect("homesession");
-      request.getRequestDispatcher("start_pages/register.html").include(request, response);
+      if(SessionManager.isLoggedIn(request))   response.sendRedirect("adminhome");
+      request.getRequestDispatcher("pages/start_pages/register.html").include(request, response);
       String s= request.getParameter("Exist");
             if("True".equals(s))
                 out.println("<h3> User  Exist</h3>");
-      request.getRequestDispatcher("includes/footer.html").include(request, response);
          }
     }
     @Override

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Registration Form</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="static/css/start_pages/register.css">
+    </head>
+    <body>
+     <div class="fixit">
+        <div class="container d-flex justify-content-center align-items-center vh-100">
+            <div class="card shadow-lg p-4" style="width: 100%; max-width: 600px;">
+                <h3 class="text-center mb-4">Registration Form</h3>
+                <form>
+                    <div class="mb-3">
+                        <div class="card-header" onclick="toggleCollapse(this, 'nameSection')">
+                            Name
+                            <i class="bi bi-chevron-down section-icon" id="icon-nameSection"></i>
+                        </div>
+                        <div class="collapse" id="nameSection">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="firstName" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lastName" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="card-header" onclick="toggleCollapse(this, 'personalInfoSection')">
+                            Personal Info
+                            <i class="bi bi-chevron-down section-icon" id="icon-personalInfoSection"></i>
+                        </div>
+                        <div class="collapse" id="personalInfoSection">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="job" class="form-label">Job</label>
+                                        <input type="text" class="form-control" id="job" placeholder="Job">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                                        <input type="date" class="form-control" id="dateOfBirth">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="city" class="form-label">City</label>
+                                            <input type="text" class="form-control" id="city" placeholder="City">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="district" class="form-label">District</label>
+                                            <input type="text" class="form-control" id="district">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="street" class="form-label">Street</label>
+                                                <input type="text" class="form-control" id="street" placeholder="Street name">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="building" class="form-label">Building</label>
+                                                <input type="number" class="form-control" id="building">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div></div>
+                        <div class="mb-3">
+                            <div class="card-header" onclick="toggleCollapse(this, 'credentialsSection')">
+                                Credentials
+                                <i class="bi bi-chevron-down section-icon" id="icon-credentialsSection"></i>
+                            </div>
+                            <div class="collapse" id="credentialsSection">
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input type="password" class="form-control" id="password" placeholder="Password" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="confirmPassword" class="form-label">Retype Password</label>
+                                            <input type="password" class="form-control" id="confirmPassword" placeholder="Retype Password" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+     </div>
+
+    <script src="static/js/start_pages/register.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
