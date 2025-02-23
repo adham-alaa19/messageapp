@@ -3,7 +3,7 @@ package com.iti.managers;
 
 import com.iti.database.DB_Handler;
 import com.iti.database.SQL_Condition;
-import com.iti.database.psql.PSQLHandler;
+import com.iti.database.psql.PSQL_Handler;
 import com.iti.models.IUser;
 import com.iti.models.Customer;
 import com.iti.models.Admin;
@@ -15,7 +15,7 @@ import java.util.Map;
 public class UserManager {
 
     public IUser getUser2(String mail, String password) {
-        DB_Handler dbHandler = new PSQLHandler();
+        DB_Handler dbHandler = new PSQL_Handler();
         dbHandler.connect();
         try {
             String customerQuery = "SELECT * FROM customer WHERE email = '" + mail 
@@ -53,7 +53,7 @@ public class UserManager {
     
     
      public IUser getUser(String mail, String password) {
-        DB_Handler dbHandler = new PSQLHandler();
+        DB_Handler dbHandler = new PSQL_Handler();
         IUser user=null ;
         List<Customer> userList=null;
         List<Admin> adminList=null;
@@ -73,7 +73,7 @@ public class UserManager {
      
      
          public void createUser(IUser user) {
-             DB_Handler dbHandler = new PSQLHandler();
+             DB_Handler dbHandler = new PSQL_Handler();
              dbHandler.connect();
              dbHandler.create(user);
              dbHandler.disconnect();

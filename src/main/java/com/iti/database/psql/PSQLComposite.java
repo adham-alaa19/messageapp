@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author theda
  */
-public interface PSQL_Composite {
+public interface PSQLComposite {
     default String toRow() {
         StringBuilder rowBuilder = new StringBuilder("ROW(");
         Field[] fields = this.getClass().getDeclaredFields();

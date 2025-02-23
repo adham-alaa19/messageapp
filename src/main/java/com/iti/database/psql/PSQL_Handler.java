@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PSQLHandler implements DB_Handler {
+public class PSQL_Handler implements DB_Handler {
     private DataSource dataSource;
     private Connection connection;
 
@@ -90,8 +90,8 @@ public <T> T create(T entity) {
                 }
                 columns += fields[i].getName();
                 // If the field is a composite, use its placeholder and add each value from getValues()
-                if (value instanceof PSQL_Composite) {
-                    PSQL_Composite comp = (PSQL_Composite) value;
+                if (value instanceof PSQLComposite) {
+                    PSQLComposite comp = (PSQLComposite) value;
                     placeholder += comp.toRowPlaceHolder();
                     Map<String, Object> compValues = comp.getValues();
                     for (Object compVal : compValues.values()) {
@@ -155,8 +155,8 @@ public <T> T updateByValue(T entity, String whereColumn, DB_Condition condition,
                     firstField = false;
                 }
                 setClause += field.getName() + "=";
-                if (fieldValue instanceof PSQL_Composite) {
-                    PSQL_Composite comp = (PSQL_Composite) fieldValue;
+                if (fieldValue instanceof PSQLComposite) {
+                    PSQLComposite comp = (PSQLComposite) fieldValue;
                     setClause += comp.toRowPlaceHolder();
                     Map<String, Object> compValues = comp.getValues();
                     for (Object compVal : compValues.values()) {
@@ -215,7 +215,7 @@ public <T> List<T> readAll(Class<T> myClass) {
              T entity = myClass.getDeclaredConstructor().newInstance();
              for (Field field : fields) {
                  field.setAccessible(true);
-                 if (PSQL_Composite.class.isAssignableFrom(field.getType())) {
+                 if (PSQLComposite.class.isAssignableFrom(field.getType())) {
                      String compStr = rs.getString(field.getName());
                      if (compStr != null) {
                          Object compInstance = PSQLCompositeHelper.parseComposite(compStr, field.getType());
@@ -251,7 +251,7 @@ public <T> List<T> readByValue(Class<T> tableClass, String column, DB_Condition 
                 T entity = tableClass.getDeclaredConstructor().newInstance();
                 for (Field field : fields) {
                     field.setAccessible(true);
-                    if (PSQL_Composite.class.isAssignableFrom(field.getType())) {
+                    if (PSQLComposite.class.isAssignableFrom(field.getType())) {
                         String compStr = rs.getString(field.getName());
                         if (compStr != null) {
                             Object compInstance = PSQLCompositeHelper.parseComposite(compStr, field.getType());
@@ -312,7 +312,7 @@ public boolean deleteByValue(Class<?> myClass, String column, DB_Condition condi
                 String columnName = field.getName();
                 Object dbValue = rs.getObject(columnName);
                 
-                if (PSQL_Composite.class.isAssignableFrom(field.getType())) {
+                if (PSQLComposite.class.isAssignableFrom(field.getType())) {
                     String compStr = rs.getString(columnName);
                     if (compStr != null) {
                         dbValue = PSQLCompositeHelper.parseComposite(compStr, field.getType());
@@ -440,7 +440,7 @@ public <T> T updateByValue(T entity, ConditionBuilder cdb) {
                 }
             }
         } catch (IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(PSQLHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PSQL_Handler.class.getName()).log(Level.SEVERE, null, ex);
         }
     } catch (SQLException e) {
         throw new RuntimeException("Error updating entity", e);
