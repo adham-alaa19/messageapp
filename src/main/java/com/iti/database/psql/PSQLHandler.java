@@ -1,6 +1,7 @@
 
 package com.iti.database.psql;
 
+import com.iti.database.ConditionBuilder;
 import com.iti.database.DB_Condition;
 import com.iti.database.DB_Handler;
 import java.lang.reflect.Field;
@@ -18,8 +19,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Psql_Handler implements DB_Handler {
+public class PSQLHandler implements DB_Handler {
     private DataSource dataSource;
     private Connection connection;
 
@@ -87,8 +90,8 @@ public <T> T create(T entity) {
                 }
                 columns += fields[i].getName();
                 // If the field is a composite, use its placeholder and add each value from getValues()
-                if (value instanceof PsqlComposite) {
-                    PsqlComposite comp = (PsqlComposite) value;
+                if (value instanceof PSQL_Composite) {
+                    PSQL_Composite comp = (PSQL_Composite) value;
                     placeholder += comp.toRowPlaceHolder();
                     Map<String, Object> compValues = comp.getValues();
                     for (Object compVal : compValues.values()) {
@@ -152,8 +155,8 @@ public <T> T updateByValue(T entity, String whereColumn, DB_Condition condition,
                     firstField = false;
                 }
                 setClause += field.getName() + "=";
-                if (fieldValue instanceof PsqlComposite) {
-                    PsqlComposite comp = (PsqlComposite) fieldValue;
+                if (fieldValue instanceof PSQL_Composite) {
+                    PSQL_Composite comp = (PSQL_Composite) fieldValue;
                     setClause += comp.toRowPlaceHolder();
                     Map<String, Object> compValues = comp.getValues();
                     for (Object compVal : compValues.values()) {
@@ -212,7 +215,7 @@ public <T> List<T> readAll(Class<T> myClass) {
              T entity = myClass.getDeclaredConstructor().newInstance();
              for (Field field : fields) {
                  field.setAccessible(true);
-                 if (PsqlComposite.class.isAssignableFrom(field.getType())) {
+                 if (PSQL_Composite.class.isAssignableFrom(field.getType())) {
                      String compStr = rs.getString(field.getName());
                      if (compStr != null) {
                          Object compInstance = PSQLCompositeHelper.parseComposite(compStr, field.getType());
@@ -248,7 +251,7 @@ public <T> List<T> readByValue(Class<T> tableClass, String column, DB_Condition 
                 T entity = tableClass.getDeclaredConstructor().newInstance();
                 for (Field field : fields) {
                     field.setAccessible(true);
-                    if (PsqlComposite.class.isAssignableFrom(field.getType())) {
+                    if (PSQL_Composite.class.isAssignableFrom(field.getType())) {
                         String compStr = rs.getString(field.getName());
                         if (compStr != null) {
                             Object compInstance = PSQLCompositeHelper.parseComposite(compStr, field.getType());
@@ -309,7 +312,7 @@ public boolean deleteByValue(Class<?> myClass, String column, DB_Condition condi
                 String columnName = field.getName();
                 Object dbValue = rs.getObject(columnName);
                 
-                if (PsqlComposite.class.isAssignableFrom(field.getType())) {
+                if (PSQL_Composite.class.isAssignableFrom(field.getType())) {
                     String compStr = rs.getString(columnName);
                     if (compStr != null) {
                         dbValue = PSQLCompositeHelper.parseComposite(compStr, field.getType());
@@ -323,6 +326,145 @@ public boolean deleteByValue(Class<?> myClass, String column, DB_Condition condi
         throw new RuntimeException("Error executing select query: " + query, e);
     }
     return rows;
+}
+
+ @Override
+public <T> List<Map<String, Object>> joinTables(Class<T> leftTableClass, Class<T> rightTableClass, String joinColumn1, String joinColumn2) {
+    List<Map<String, Object>> results = new ArrayList<>();
+    String leftTableName = leftTableClass.getSimpleName();
+    String rightTableName = rightTableClass.getSimpleName();
+    
+    String query = "SELECT * FROM " + leftTableName + " JOIN " + rightTableName + 
+                   " ON " + leftTableName + "." + joinColumn1 + " = " + rightTableName + "." + joinColumn2;
+    
+    try (PreparedStatement stmt = connection.prepareStatement(query);
+         ResultSet rs = stmt.executeQuery()) {
+        
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        
+        while (rs.next()) {
+            Map<String, Object> row = new LinkedHashMap<>();
+            for (int i = 1; i <= columnCount; i++) {
+                String columnName = metaData.getColumnName(i);
+                row.put(columnName, rs.getObject(i));
+            }
+            results.add(row);
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Error joining tables", e);
+    }
+    
+    return results;
+}
+
+@Override
+public <T> List<T> readByValue(Class<T> tableClass, ConditionBuilder cdb) {
+    List<T> results = new ArrayList<>();
+    String tableName = tableClass.getSimpleName();
+    String query = "SELECT * FROM " + tableName + " WHERE " + cdb.getCondition();
+
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        List<Object> values = cdb.getValues();
+        for (int i = 0; i < values.size(); i++) {
+            stmt.setObject(i + 1, values.get(i));
+        }
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            Field[] fields = tableClass.getDeclaredFields();
+            while (rs.next()) {
+                T entity = tableClass.getDeclaredConstructor().newInstance();
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    Object dbValue = rs.getObject(field.getName());
+                    if (dbValue != null) {
+                        field.set(entity, dbValue);
+                    }
+                }
+                results.add(entity);
+            }
+        }
+    } catch (SQLException | ReflectiveOperationException e) {
+        throw new RuntimeException("Error reading by condition", e);
+    }
+
+    return results;
+}
+
+@Override
+public <T> T updateByValue(T entity, ConditionBuilder cdb) {
+    Class<?> myClass = entity.getClass();
+    String tableName = myClass.getSimpleName();
+    String setClause = "";
+    List<Object> values = new ArrayList<>();
+    Field[] fields = myClass.getDeclaredFields();
+
+    boolean first = true;
+    for (Field field : fields) {
+        field.setAccessible(true);
+        try {
+            Object fieldValue = field.get(entity);
+            if (fieldValue != null) {
+                if (!first) {
+                    setClause += ", ";
+                } else {
+                    first = false;
+                }
+                setClause += field.getName() + " = ?";
+                values.add(fieldValue);
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Failed to access field: " + field.getName(), e);
+        }
+    }
+
+    String query = "UPDATE " + tableName + " SET " + setClause + " WHERE " + cdb.getCondition() + " RETURNING *";
+
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        int idx = 1;
+        for (Object val : values) {
+            stmt.setObject(idx++, val);
+        }
+        for (Object condVal : cdb.getValues()) {
+            stmt.setObject(idx++, condVal);
+        }
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                for (Field field : fields) {
+                    field.setAccessible(true);
+                    Object dbValue = rs.getObject(field.getName());
+                    if (dbValue != null) {
+                        field.set(entity, dbValue);
+                    }
+                }
+            }
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(PSQLHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Error updating entity", e);
+    }
+
+    return entity;
+}
+
+@Override
+public boolean deleteByValue(Class<?> tableClass, ConditionBuilder cdb) {
+    String tableName = tableClass.getSimpleName();
+    String query = "DELETE FROM " + tableName + " WHERE " + cdb.getCondition();
+
+    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        List<Object> values = cdb.getValues();
+        for (int i = 0; i < values.size(); i++) {
+            stmt.setObject(i + 1, values.get(i));
+        }
+
+        int affectedRows = stmt.executeUpdate();
+        return affectedRows > 0;
+    } catch (SQLException e) {
+        throw new RuntimeException("Error deleting entity", e);
+    }
 }
 
 

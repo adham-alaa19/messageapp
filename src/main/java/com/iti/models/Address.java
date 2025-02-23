@@ -1,10 +1,10 @@
 
 package com.iti.models;
 
-import com.iti.database.psql.PsqlComposite;
+import com.iti.database.psql.PSQL_Composite;
 
 
-public class Address implements PsqlComposite {
+public class Address implements PSQL_Composite {
 
     private String governorate;
     private String district;
