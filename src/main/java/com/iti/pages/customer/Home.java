@@ -25,12 +25,11 @@ public class Home extends HttpServlet {
             throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
         if(SessionManager.isLoggedIn(request)){
-      request.getRequestDispatcher("includes/header.html").include(request, response);
+      request.getRequestDispatcher("includes/header.jsp").include(request, response);
       request.getRequestDispatcher("includes/navbar.html").include(request, response);
-      request.getRequestDispatcher("customer_pages/home.html").include(request, response);
+      request.getRequestDispatcher("pages/customer_pages/home.html").include(request, response);
       request.getRequestDispatcher("includes/footer.html").include(request, response);
-    }
-               else 
+    }else 
          response.sendRedirect("loginsession?Logged=False");
 
          } catch(Exception e) {

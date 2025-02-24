@@ -17,7 +17,23 @@ public class Customer implements IUser {
     private String msisdn;
     //private List<MessageApiInfo> apiInfos; 
     private Boolean is_valid;
+ 
+    
+    public Customer(String first_name, String last_name, Date birth_date, String email, String password, String job, 
+                String governorate, String district, String street, int building_no, String msisdn) {
+    this.first_name = first_name;
+    this.last_name = last_name;
+    this.birth_date = birth_date;
+    this.email = email;
+    this.password = password;
+    this.job = job;
+    this.address = new Address(governorate, district,street, building_no);
+    this.msisdn = msisdn;
+    this.is_valid = false; 
+}
 
+
+    
     public int getId() { return customer_id; }
     public void setId(int customer_id) { this.customer_id = customer_id; }
 

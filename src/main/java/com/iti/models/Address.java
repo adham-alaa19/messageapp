@@ -13,7 +13,7 @@ public class Address implements PSQLComposite {
 
 
 
-    public Address(String governorate,String district, String street, int building, String country, String postalCode) {
+    public Address(String governorate,String district, String street, int building) {
         this.district = district;
         this.street = street;
         this.governorate = governorate;
@@ -21,6 +21,10 @@ public class Address implements PSQLComposite {
 
     }
 
+    
+    public Address(){
+        
+    }
     public String getGovernorate() {
         return governorate;
     }

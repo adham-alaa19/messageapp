@@ -9,7 +9,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -39,16 +38,18 @@ public class Login extends HttpServlet {
       String mail = request.getParameter("email");
       String password = request.getParameter("password");
       UserManager usrmanager = new UserManager();
-      IUser user= usrmanager.getUser(mail, password);
-      System.out.println(user);
+      IUser user= usrmanager.getUser(mail);
       if(user!=null) 
       {
-       HttpSession mySession = request.getSession(true);
-       mySession.setAttribute("user", user);
+       if(usrmanager.checkUserPassword(user, password))
+       {
+       SessionManager.startSession(request, user);
        if(usrmanager.isAdmin(user))
            response.sendRedirect("adminhome");
        else
             response.sendRedirect("home");
+      } else
+        response.sendRedirect("login?WrongPassword=True");
       }
       else  response.sendRedirect("login?NotFound=True");
     }
