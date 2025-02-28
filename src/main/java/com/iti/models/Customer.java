@@ -17,6 +17,11 @@ public class Customer implements IUser {
     private String msisdn;
     //private List<MessageApiInfo> apiInfos; 
     private Boolean is_valid;
+    
+    
+    public Customer(){
+        
+    }
  
     
     public Customer(String first_name, String last_name, Date birth_date, String email, String password, String job, 

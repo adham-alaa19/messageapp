@@ -6,7 +6,7 @@ import com.iti.database.DB_Condition;
 import com.iti.database.DB_Handler;
 import java.lang.reflect.Field;
 import java.util.Map;
- import javax.naming.Context;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -89,7 +89,6 @@ public <T> T create(T entity) {
                     firstColumn = false;
                 }
                 columns += fields[i].getName();
-                // If the field is a composite, use its placeholder and add each value from getValues()
                 if (value instanceof PSQLComposite) {
                     PSQLComposite comp = (PSQLComposite) value;
                     placeholder += comp.toRowPlaceHolder();
@@ -130,7 +129,8 @@ public <T> T create(T entity) {
             }
         }
     } catch (SQLException e) {
-        throw new RuntimeException("Error inserting entity", e);
+        //throw new RuntimeException("Error inserting entity", e);
+        return null;
     }
     
     return entity;

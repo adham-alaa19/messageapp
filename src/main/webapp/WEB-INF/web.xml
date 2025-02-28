@@ -11,13 +11,57 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
-<!--    <listener>
+    <!--    <listener>
         <description>ServletContextListener</description>
         <listener-class>com.iti.config.ContexListener</listener-class>
     </listener>-->
+    <filter>
+        <filter-name>AuthenFilter</filter-name>
+        <filter-class>com.iti.filters.AuthenFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>AdminFilter</filter-name>
+        <filter-class>com.iti.filters.AdminFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>HomeRedirectFilter</filter-name>
+        <filter-class>com.iti.filters.HomeRedirectFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>CustomerFilter</filter-name>
+        <filter-class>com.iti.filters.CustomerFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenFilter</filter-name>
+        <url-pattern>/app/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>CustomerFilter</filter-name>
+        <url-pattern>/app/customer/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AdminFilter</filter-name>
+        <url-pattern>/app/admin/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>HomeRedirectFilter</filter-name>
+        <url-pattern>/register</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>HomeRedirectFilter</filter-name>
+        <url-pattern>/login</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
     <listener>
         <description>ServletContextListener</description>
-        <listener-class>com.iti.config.ContextInitializer</listener-class>
+        <listener-class>com.iti.listeners.ContextInitializer</listener-class>
     </listener>
     <session-config>
         <session-timeout>

@@ -1,6 +1,6 @@
 package com.iti.pages.start;
-import com.iti.managers.SessionManager;
-import com.iti.managers.UserManager;
+import com.iti.managers.session.SessionManager;
+import com.iti.managers.users.UserManager;
 import com.iti.models.IUser;
 import java.io.IOException;
 import java.io.PrintWriter;

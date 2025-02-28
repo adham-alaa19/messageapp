@@ -50,3 +50,9 @@ body {
 .collapse.show {
     max-height: 1000px; 
 }
+
+.my-error {
+        color: red;
+        font-size: 0.9em;
+        display: none;
+      }

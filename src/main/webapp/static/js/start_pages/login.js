@@ -1,3 +1,4 @@
+
  document.addEventListener("DOMContentLoaded", function() {
     const urlParams = new URLSearchParams(window.location.search);
     const messageContainer = document.getElementById("message-container");
@@ -16,3 +17,6 @@
             </div>`;
     }
 });
+
+
+

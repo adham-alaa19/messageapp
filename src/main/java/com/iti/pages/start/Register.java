@@ -6,8 +6,10 @@ package com.iti.pages.start;
 
 import com.iti.database.DB_Handler;
 import com.iti.database.psql.PSQL_Handler;
-import com.iti.managers.SessionManager;
+import com.iti.managers.session.SessionManager;
+import com.iti.managers.users.UserManager;
 import com.iti.models.Customer;
+import com.iti.utils.UserValidator;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,6 +18,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Date;
+import java.util.ArrayList;
 
 /**
  *
@@ -38,31 +41,33 @@ public class Register extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        DB_connector dbc = new DB_connector();
-//        int id = Integer.parseInt(request.getParameter("id"));
-//       boolean added= dbc.addUser(id, request.getParameter("fname"), request.getParameter("lname"), request.getParameter("uname"), request.getParameter("password"));
-//       if(added) 
-//       response.sendRedirect("homecookie");
-//       else  response.sendRedirect("register?Exist=True");
-//    
-              String firstName = request.getParameter("first_name");
-        String lastName = request.getParameter("last_name");
-        Date birthDate = Date.valueOf(request.getParameter("birth_date")); // Ensure the format is YYYY-MM-DD
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String job = request.getParameter("job");
+             
+            String firstName = request.getParameter("firstName");
+            String lastName = request.getParameter("lastName");
+            String job = request.getParameter("job");
+            String governorate = request.getParameter("city");
+            String district = request.getParameter("district");
+            String street = request.getParameter("street");   
+            String birthDate = request.getParameter("dateOfBirth");
+            String buildingNo = request.getParameter("building");
+            String phone = request.getParameter("phone");
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            String confirmPassword = request.getParameter("confirmPassword");
+    
+            ArrayList<String> errors = UserValidator.validateUser(firstName, lastName, birthDate, email, password,
+                confirmPassword, job, governorate, district, street, buildingNo, phone);
+
+        if (!errors.isEmpty()) {
+            response.sendRedirect("register?" + String.join("&", errors));
+            return;
+        }
+           UserManager userManager = new UserManager();
+            
         
-        String governorate = request.getParameter("governorate");
-        String district = request.getParameter("district");
-        String street = request.getParameter("street");
-        int buildingNo = Integer.parseInt(request.getParameter("building_no"));
-
-        String msisdn = request.getParameter("msisdn");
-
-        // Creating a Customer object
-        Customer customer = new Customer(firstName, lastName, birthDate, email, password, job, governorate, district, street, buildingNo, msisdn);
+    }
         
         
         
     }
-}
+

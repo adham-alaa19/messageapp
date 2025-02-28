@@ -4,8 +4,6 @@
  */
 package com.iti.pages.start;
 
-import com.iti.managers.session.SessionManager;
-import jakarta.jms.Session;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,21 +16,27 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author theda
  */
-@WebServlet(name = "Logout", urlPatterns = {"/logout"})
-public class Logout extends HttpServlet {
+@WebServlet(name = "AnotherWay", urlPatterns = {"/otp-login-page"})
+public class OTP_Login extends HttpServlet {
+
+
+
+   
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String phone = (String)request.getAttribute("phone");
+        String hiddenPhone = phone.substring(0, phone.length() - 6) + "XXXXX";
+        request.setAttribute("hiddenPhone", hiddenPhone);
+        request.getRequestDispatcher("pages/start_pages/otp-login.jsp").include(request, response);
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-               SessionManager.endSession(request);
-               response.sendRedirect("login");
+
+
     }
-    
-        @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-               SessionManager.endSession(request);
-               response.sendRedirect("login");
-    }
+
 
 }
