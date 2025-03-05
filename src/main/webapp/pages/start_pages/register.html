@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -10,14 +10,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="static/css/start_pages/register.css">
     <style>
-      /* New class to add extra vertical spacing between rows */
-      .row-space {
-        margin-bottom: 1.5rem;
-      }
-      /* Error summary styling (user-defined) */
-      #errorSummary {
-        margin-bottom: 1rem;
-      }
+      .row-space { margin-bottom: 1.5rem; }
+      #errorSummary { margin-bottom: 1rem; }
     </style>
   </head>
   <body>
@@ -25,27 +19,26 @@
       <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card shadow-lg p-4" style="width: 100%; max-width: 600px;">
           <h3 class="text-center mb-4">Registration Form</h3>
-          <!-- Error Summary Container -->
-          <div id="errorSummary" class="alert alert-danger d-none"></div>
-          <form action="register" method="post" id="registerForm">
+          <div id="errorsummary" class="alert alert-danger d-none"></div> <!-- Updated ID -->
+          <form action="register" method="post" id="registerform">
             <!-- Name Section -->
             <div class="mb-3">
-              <div class="card-header" onclick="toggleCollapse(this, 'nameSection')">
+              <div class="card-header" onclick="toggleCollapse(this, 'namesection')">
                 Name
-                <i class="bi bi-chevron-down section-icon" id="icon-nameSection"></i>
+                <i class="bi bi-chevron-down section-icon" id="icon-namesection"></i>
               </div>
-              <div class="collapse" id="nameSection">
+              <div class="collapse" id="namesection">
                 <div class="card-body">
                   <div class="row row-space">
                     <div class="col-md-6 mb-3">
-                      <label for="firstName" class="form-label">First Name</label>
-                      <input type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" required>
-                      <div class="my-error" id="error-firstName"></div>
+                      <label for="firstname" class="form-label">First Name</label>
+                      <input type="text" class="form-control" id="firstname" name="firstname" placeholder="First Name" required>
+                      <div class="my-error" id="error-firstname"></div>
                     </div>
                     <div class="col-md-6 mb-3">
-                      <label for="lastName" class="form-label">Last Name</label>
-                      <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" required>
-                      <div class="my-error" id="error-lastName"></div>
+                      <label for="lastname" class="form-label">Last Name</label>
+                      <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Last Name" required>
+                      <div class="my-error" id="error-lastname"></div>
                     </div>
                   </div>
                 </div>
@@ -53,11 +46,11 @@
             </div>
             <!-- Personal Info Section -->
             <div class="mb-3">
-              <div class="card-header" onclick="toggleCollapse(this, 'personalInfoSection')">
+              <div class="card-header" onclick="toggleCollapse(this, 'personalinfosection')">
                 Personal Info
-                <i class="bi bi-chevron-down section-icon" id="icon-personalInfoSection"></i>
+                <i class="bi bi-chevron-down section-icon" id="icon-personalinfosection"></i>
               </div>
-              <div class="collapse" id="personalInfoSection">
+              <div class="collapse" id="personalinfosection">
                 <div class="card-body">
                   <div class="row row-space">
                     <div class="col-md-6 mb-3">
@@ -66,9 +59,9 @@
                       <div class="my-error" id="error-job"></div>
                     </div>
                     <div class="col-md-6 mb-3">
-                      <label for="dateOfBirth" class="form-label">Date of Birth</label>
-                      <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth">
-                      <div class="my-error" id="error-dateOfBirth"></div>
+                      <label for="birthdate" class="form-label">Date of Birth</label>
+                      <input type="date" class="form-control" id="birthdate" name="birthdate">
+                      <div class="my-error" id="error-birthdate"></div>
                     </div>
                   </div>
                   <div class="row row-space">
@@ -107,11 +100,11 @@
             </div>
             <!-- Credentials Section -->
             <div class="mb-3">
-              <div class="card-header" onclick="toggleCollapse(this, 'credentialsSection')">
+              <div class="card-header" onclick="toggleCollapse(this, 'credentialssection')">
                 Credentials
-                <i class="bi bi-chevron-down section-icon" id="icon-credentialsSection"></i>
+                <i class="bi bi-chevron-down section-icon" id="icon-credentialssection"></i>
               </div>
-              <div class="collapse" id="credentialsSection">
+              <div class="collapse" id="credentialssection">
                 <div class="card-body">
                   <div class="mb-3 row-space">
                     <label for="email" class="form-label">Email</label>
@@ -125,9 +118,9 @@
                       <div class="my-error" id="error-password"></div>
                     </div>
                     <div class="col-md-6 mb-3">
-                      <label for="confirmPassword" class="form-label">Retype Password</label>
-                      <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Retype Password" required>
-                      <div class="my-error" id="error-confirmPassword"></div>
+                      <label for="confirmpassword" class="form-label">Retype Password</label>
+                      <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Retype Password" required>
+                      <div class="my-error" id="error-confirmpassword"></div>
                     </div>
                   </div>
                 </div>

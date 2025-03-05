@@ -36,7 +36,19 @@ public class SessionManager {
         Object user = mySession.getAttribute("user");
         return user instanceof Admin;
     }
-
+    
+        public static boolean isCustomerSession(HttpServletRequest request) {
+        HttpSession mySession = request.getSession(false);
+        Object user = mySession.getAttribute("user");
+        return user instanceof Customer;
+    }
+        
+        public static boolean isCustomersSessionVerified(HttpServletRequest request) {
+        HttpSession mySession = request.getSession(false);
+        Object user = mySession.getAttribute("user");
+        return user instanceof Customer;
+    }
+       
     public static Admin getSessionAdmin(HttpServletRequest request) {
         HttpSession mySession = request.getSession(false);
         IUser user = (IUser) mySession.getAttribute("user");

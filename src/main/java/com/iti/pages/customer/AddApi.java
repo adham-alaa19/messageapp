@@ -2,28 +2,35 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.iti.pages.admin;
+package com.iti.pages.customer;
 
-
-
-import com.iti.managers.users.AdminManager;
+import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
-@WebServlet("/app/admin/deleteuser")
-public class DeleteUserServlet extends HttpServlet {
+/**
+ *
+ * @author theda
+ */
+@WebServlet(name = "AddApi", urlPatterns = {"/add_api_info"})
+public class AddApi extends HttpServlet {
 
-    private final AdminManager adminManager = new AdminManager();
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int userId = Integer.parseInt(request.getParameter("id"));
-        adminManager.deleteUser(userId);
-        response.sendRedirect("viewusers"); 
     }
+
+
+
 }

@@ -36,6 +36,19 @@ public class Customer implements IUser {
     this.msisdn = msisdn;
     this.is_valid = false; 
 }
+    
+    
+    public Customer(String first_name, String last_name, Date birth_date, String email, String job, 
+                String governorate, String district, String street, int building_no, String msisdn) {
+    this.first_name = first_name;
+    this.last_name = last_name;
+    this.birth_date = birth_date;
+    this.email = email;
+    this.job = job;
+    this.address = new Address(governorate, district,street, building_no);
+    this.msisdn = msisdn;
+    this.is_valid = true; 
+}
 
 
     
@@ -73,7 +86,7 @@ public class Customer implements IUser {
     public String getMsisdn() { return msisdn; }
     public void setMsisdn(String msisdn) { this.msisdn = msisdn; }
 
-    public boolean isIs_valid() { return is_valid; }
+    public boolean is_valid() { return is_valid; }
     public void setIs_valid(boolean is_valid) { this.is_valid = is_valid; }
     
 //        public List<MessageApiInfo> getApiInfos() {

@@ -20,7 +20,6 @@ public class Login extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
                  try (PrintWriter out = response.getWriter()) {
-      if(SessionManager.isLoggedIn(request))   response.sendRedirect("adminhome");
       request.getRequestDispatcher("pages/start_pages/login.html").include(request, response);
       String s= request.getParameter("NotFound");
       String s2= request.getParameter("Logged");
@@ -45,9 +44,9 @@ public class Login extends HttpServlet {
        {
        SessionManager.startSession(request, user);
        if(usrmanager.isAdmin(user))
-           response.sendRedirect("adminhome");
+           response.sendRedirect("app/admin/home");
        else
-            response.sendRedirect("home");
+            response.sendRedirect("app/customer/home");
       } else
         response.sendRedirect("login?WrongPassword=True");
       }

@@ -38,8 +38,13 @@ public class CustomerFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        if (SessionManager.isAdminSession(httpRequest)) {
+        if (!SessionManager.isCustomerSession(httpRequest)) {
             httpResponse.sendRedirect("app/admin/home");
+            return;
+        }
+        
+        if (!SessionManager.getSessionCustomer(httpRequest).is_valid()) {
+            httpResponse.sendRedirect("../../verify");
             return;
         }
 

@@ -6,6 +6,7 @@ package com.iti.pages.start;
 
 import com.iti.database.DB_Handler;
 import com.iti.database.psql.PSQL_Handler;
+import com.iti.exceptions.UserAlreadyExistsException;
 import com.iti.managers.session.SessionManager;
 import com.iti.managers.users.UserManager;
 import com.iti.models.Customer;
@@ -19,6 +20,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -26,48 +29,69 @@ import java.util.ArrayList;
  */
 @WebServlet(name = "Register", urlPatterns = {"/register"})
 public class Register extends HttpServlet {
- 
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-          try (PrintWriter out = response.getWriter()) {
-      if(SessionManager.isLoggedIn(request))   response.sendRedirect("adminhome");
-      request.getRequestDispatcher("pages/start_pages/register.html").include(request, response);
-      String s= request.getParameter("Exist");
-            if("True".equals(s))
+        try (PrintWriter out = response.getWriter()) {
+            if (SessionManager.isLoggedIn(request)) {
+                response.sendRedirect("adminhome");
+            }
+            request.getRequestDispatcher("pages/start_pages/register.html").include(request, response);
+            String s = request.getParameter("Exist");
+            if ("True".equals(s)) {
                 out.println("<h3> User  Exist</h3>");
-         }
+            }
+        }
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-             
-            String firstName = request.getParameter("firstName");
-            String lastName = request.getParameter("lastName");
-            String job = request.getParameter("job");
-            String governorate = request.getParameter("city");
-            String district = request.getParameter("district");
-            String street = request.getParameter("street");   
-            String birthDate = request.getParameter("dateOfBirth");
-            String buildingNo = request.getParameter("building");
-            String phone = request.getParameter("phone");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            String confirmPassword = request.getParameter("confirmPassword");
-    
-            ArrayList<String> errors = UserValidator.validateUser(firstName, lastName, birthDate, email, password,
-                confirmPassword, job, governorate, district, street, buildingNo, phone);
+
+        String firstName = request.getParameter("firstname");
+        String lastName = request.getParameter("lastname");
+        String job = request.getParameter("job");
+        String governorate = request.getParameter("city");
+        String district = request.getParameter("district");
+        String street = request.getParameter("street");
+        String birthDateString = request.getParameter("birthdate");
+        String buildingNoStr = request.getParameter("building");
+        String phone = request.getParameter("phone");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmpassword");
+
+        ArrayList<String> errors = UserValidator.validateUser(firstName, lastName, birthDateString, email, password,
+                confirmPassword, job, governorate, district, street, buildingNoStr, phone);
 
         if (!errors.isEmpty()) {
             response.sendRedirect("register?" + String.join("&", errors));
             return;
         }
-           UserManager userManager = new UserManager();
-            
-        
-    }
-        
-        
-        
+        Date birthDate = null;
+        try {
+            birthDate = java.sql.Date.valueOf(birthDateString);
+        } catch (IllegalArgumentException e) {
+            // Should not occur if validation passed
+        }
+        int buildingNo = 1;
+        try {
+            buildingNo = Integer.parseInt(buildingNoStr);
+        } catch (NumberFormatException e) {
+            // Should not occur if validation passed
+        }
+        UserManager userManager = new UserManager();
+        try {
+            Customer customer = userManager.createCustomer(firstName, lastName, birthDate, email, password,
+                    job, governorate, district, street, buildingNo, phone);
+            SessionManager.startSession(request, customer);
+            response.sendRedirect("verify");
+        } catch (UserAlreadyExistsException ex) {
+            Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+           response.sendRedirect("register?Exist=True");
+        }
+
     }
 
+}

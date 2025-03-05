@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.iti.managers;
+package com.iti.managers.users;
 
 
 
@@ -10,6 +10,7 @@ import com.iti.models.Customer;
 import com.iti.database.DB_Handler;
 import com.iti.database.SQL_Condition;
 import com.iti.database.psql.PSQL_Handler;
+import com.iti.models.Message;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class AdminManager {
     // Get Single User
     public Customer getUser(int id) {
         dbh.connect();
-        List<Customer> users = (List<Customer>) dbh.readByValue(Customer.class, "id", SQL_Condition.EQUAL, id);
+        List<Customer> users = (List<Customer>) dbh.readByValue(Customer.class, "customer_id", SQL_Condition.EQUAL, id);
         dbh.disconnect();
         if (users != null && !users.isEmpty()) {
             return users.get(0);
@@ -51,7 +52,7 @@ public class AdminManager {
     // Update User
     public Customer updateUser(Customer user) {
         dbh.connect();
-        Customer result = dbh.updateByValue(user, "id", SQL_Condition.EQUAL, user.getId());
+        Customer result = dbh.updateByValue(user, "customer_id", SQL_Condition.EQUAL, user.getId());
         dbh.disconnect();
         return result;
     }
@@ -59,20 +60,44 @@ public class AdminManager {
     // Delete User
     public boolean deleteUser(int id) {
         dbh.connect();
-        boolean result = dbh.deleteByValue(Customer.class, "id", SQL_Condition.EQUAL, id);
+        boolean result = dbh.deleteByValue(Customer.class, "customer_id", SQL_Condition.EQUAL, id);
         dbh.disconnect();
         return result;
     }
     // Get message statistics for a user
-public int getMessageCount(int userId) {
+public int getMessageCount2(int userId) {
     dbh.connect();
-    String query = "SELECT COUNT(*) AS message_count FROM messages WHERE user_id = " + userId;
-    List<Map<String, Object>> result = dbh.executeSelectQuery(query, Customer.class);
+    Customer customer = null;
+    List<Customer> users = (List<Customer>) dbh.readByValue(Customer.class, "customer_id", SQL_Condition.EQUAL, userId);
+        if (users != null && !users.isEmpty()) {
+            customer= users.get(0);
+        }
+    String query = "SELECT COUNT(*) AS message_count FROM message WHERE msg_from = " + "'"+customer.getMsisdn()+ "';";
+    List<Map<String, Object>> result = dbh.executeSelectQuery(query, Message.class);
     dbh.disconnect();
     if (!result.isEmpty()) {
-        return (int) result.get(0).get("message_count");
+        System.out.println("");
+        if( result.get(0).get("message_count") !=null)
+        {
+        
+        int value =(int)  result.get(0).get("message_count");
+        return value ;
+        }
     }
     return 0;
 }
+
+public int getMessageCount(int userId) {
+    dbh.connect();
+    Customer customer = null;
+    List<Customer> users = (List<Customer>) dbh.readByValue(Customer.class, "customer_id", SQL_Condition.EQUAL, userId);
+        if (users != null && !users.isEmpty()) {
+            customer= users.get(0);
+        }   
+    List<Message> result =  dbh.readByValue(Message.class,"msg_from",SQL_Condition.EQUAL,customer.getMsisdn());
+     dbh.disconnect();
+    return result.size();
+}
+
 
 }

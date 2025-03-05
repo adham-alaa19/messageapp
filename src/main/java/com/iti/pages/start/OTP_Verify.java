@@ -4,6 +4,10 @@
  */
 package com.iti.pages.start;
 
+import com.iti.managers.session.OTP_Manager;
+import com.iti.managers.session.SessionManager;
+import com.iti.managers.users.CustomerManager;
+import com.iti.models.Customer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,62 +23,38 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "Verify", urlPatterns = {"/verify"})
 public class OTP_Verify extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-       request.getRequestDispatcher("pages/start_pages/verify.html").include(request, response);
-
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Customer customer = SessionManager.getSessionCustomer(request);
+        OTP_Manager otpManager = new OTP_Manager();
+        otpManager.storeAndSendOTP(request, customer.getMsisdn());
+        System.out.println(customer.getMsisdn());
+        System.out.println("HELLLLO THERE");
+        System.out.println(customer.getMsisdn());
+        request.setAttribute("phone", customer.getMsisdn());
+        request.setAttribute("pub_id", customer.getCustomer_pub_id());
+        request.getRequestDispatcher("pages/start_pages/otp-verify.jsp").include(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-    }
+        String d1 = request.getParameter("d1");
+        String d2 = request.getParameter("d2");
+        String d3 = request.getParameter("d3");
+        String d4 = request.getParameter("d4");
+        String id = request.getParameter("id");
+        String otp = d1 + d2 + d3 + d4;
+        OTP_Manager otpManager = new OTP_Manager();
+       if(otpManager.validateOTP(request, otp)){
+           CustomerManager customerManager = new CustomerManager();
+          Customer customer = customerManager.verifyCustomer(SessionManager.getSessionCustomer(request));
+          SessionManager.startSession(request, customer);
+          response.sendRedirect("app/customer/home");
+       }
+    
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    }
 
 }

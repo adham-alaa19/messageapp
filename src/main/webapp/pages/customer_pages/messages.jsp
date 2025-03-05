@@ -1,11 +1,11 @@
-<%@page import="com.iti.models.Customer"%>
+ <%@page import="com.iti.models.Message"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - Users List</title>
+    <title>Messages</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Font Awesome -->
@@ -27,8 +27,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="userstatistic">
-                            <i class="fas fa-users"></i> Users
+                        <a class="nav-link active" href="history">
+                            <i class="fas fa-envelope"></i> Messages
                         </a>
                     </li>
                 </ul>
@@ -38,39 +38,37 @@
         <!-- Main Content -->
         <div class="col-md-10 main-content">
             <div class="container mt-4">
-                <h2><i class="fas fa-users"></i> User Management</h2>
+                <h2><i class="fas fa-envelope"></i> Message Management</h2>
 
-                <!-- Users Table -->
+                <!-- Messages Table -->
                 <div class="card">
                     <div class="card-body">
                         <table class="table table-hover">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Email</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Body</th>
+                                    <th>Date</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <%
-                                    List<Customer> customers = (List<Customer>) request.getAttribute("customers");
-                                    if (customers != null) {
-                                        for (Customer customer : customers) {
+                                    List<Message> messages = (List<Message>) request.getAttribute("messages");
+                                    if (messages != null) {
+                                        for (Message message : messages) {
                                 %>
                                 <tr>
-                                    <td><%= customer.getId() %></td>
-                                    <td><%= customer.getFirstName() %></td>
-                                    <td><%= customer.getLastName() %></td>
-                                    <td><%= customer.getEmail() %></td>
+                                    <td><%= message.getMsg_from() %></td>
+                                    <td><%= message.getMsg_to() %></td>
+                                    <td><%= message.getBody() %></td>
+                                    <td><%= message.getMsg_date() %></td>
                                     <td>
-                                        <a href="userDetails?id=<%= customer.getId() %>" class="btn btn-info btn-sm">
-                                            <i class="fas fa-info-circle"></i> Details
-                                        </a>
-                                        <form action="deleteuser" method="post" style="display:inline;">
-                                            <input type="hidden" name="id" value="<%= customer.getId() %>">
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
+                                        <form action="history" method="post" style="display:inline;">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="messageId" value="<%= message.getMsg_id() %>">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this message?');">
                                                 <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </form>

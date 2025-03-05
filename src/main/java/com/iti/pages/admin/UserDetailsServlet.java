@@ -5,7 +5,7 @@
 package com.iti.pages.admin;
 
 
-import com.iti.managers.AdminManager;
+import com.iti.managers.users.AdminManager;
 import com.iti.models.Customer;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/userDetails")
+@WebServlet("/app/admin/userDetails")
 public class UserDetailsServlet extends HttpServlet {
 
     private final AdminManager adminManager = new AdminManager();
@@ -25,9 +25,8 @@ public class UserDetailsServlet extends HttpServlet {
             throws ServletException, IOException {
         int userId = Integer.parseInt(request.getParameter("id"));
         Customer user = adminManager.getUser(userId);
-        
         request.setAttribute("user", user);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("userDetails.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../../pages/admin_pages/userDetails.jsp");
         dispatcher.forward(request, response);
     }
 }

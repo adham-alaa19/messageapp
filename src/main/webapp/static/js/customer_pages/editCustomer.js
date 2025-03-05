@@ -1,20 +1,4 @@
-function toggleCollapse(element, sectionId) {
-    let collapseElement = document.getElementById(sectionId);
-    let bsCollapse = new bootstrap.Collapse(collapseElement, {toggle: false});
-    let icon = document.getElementById(`icon-${sectionId}`);
-
-    if (collapseElement.classList.contains('show')) {
-        bsCollapse.hide();
-        if (icon)
-            icon.classList.remove('rotate-icon');
-    } else {
-        bsCollapse.show();
-        if (icon)
-            icon.classList.add('rotate-icon');
-    }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
+ document.addEventListener("DOMContentLoaded", function () {
     function getUrlParams() {
         let params = new URLSearchParams(window.location.search);
         return params.getAll("invalid");
@@ -37,12 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
         showErrors(invalidFields);
     }
 
-
-
-
     const form = document.querySelector("form");
-
-
 
     form.addEventListener("submit", function (event) {
         let isFormValid = true;
@@ -74,39 +53,35 @@ function validateField(input) {
     let isValid = true;
     let errorText = "";
 
-    if (input.id === "firstname" || input.id === "lastname") {
+    if (["firstname", "lastname", "job", "governorate", "district", "street"].includes(input.id)) {
         isValid = /^[A-Za-z\s]+$/.test(value);
-        if (!isValid)
-            errorText = "Only letters allowed.";
-    } else if (["job", "city", "district", "street"].includes(input.id)) {
-        isValid = /^[A-Za-z\s]+$/.test(value);
-        if (!isValid)
-            errorText = "Only letters allowed.";
-    } else if (input.id === "building") {
+        if (!isValid) errorText = "Only letters allowed.";
+    }
+    else if (input.id === "buildingno") {
         let num = parseInt(value, 10);
         isValid = !isNaN(num) && num >= 1 && num <= 3000;
-        if (!isValid)
-            errorText = "Enter a valid building number (1-3000).";
-    } else if (input.id === "birthdate") {
+        if (!isValid) errorText = "Enter a valid building number (1-3000).";
+    }
+    else if (input.id === "birthdate") {
         isValid = validateBirthDate(value);
-        if (!isValid)
-            errorText = "You must be between 15 and 100 years old.";
-    } else if (input.id === "email") {
+        if (!isValid) errorText = "You must be between 15 and 100 years old.";
+    }
+    else if (input.id === "email") {
         isValid = validateEmail(value);
-        if (!isValid)
-            errorText = "Invalid email address.";
-    } else if (input.id === "password") {
+        if (!isValid) errorText = "Invalid email address.";
+    }
+    else if (input.id === "password") {
         isValid = value.length >= 8;
-        if (!isValid)
-            errorText = "Minimum 8 characters required.";
-    } else if (input.id === "confirmpassword") {
-        isValid = value === document.getElementById("password").value;
-        if (!isValid)
-            errorText = "Passwords do not match.";
-    } else if (input.id === "phone") {
+        if (!isValid) errorText = "Password must be at least 8 characters.";
+    }
+    else if (input.id === "confirmpassword") {
+        let passwordInput = document.getElementById("password");
+        isValid = passwordInput && value === passwordInput.value;
+        if (!isValid) errorText = "Passwords do not match.";
+    }
+    else if (input.id === "msisdn") {
         isValid = /^\+?[0-9]{10,15}$/.test(value);
-        if (!isValid)
-            errorText = "Invalid phone number.";
+        if (!isValid) errorText = "Invalid phone number.";
     }
 
     const errorDiv = document.getElementById("error-" + input.id);
@@ -126,13 +101,12 @@ function validateField(input) {
             errorDiv.style.display = "none";
         }
     }
-
+    
     return isValid;
 }
 
 function validateBirthDate(date) {
-    if (!date)
-        return false;
+    if (!date) return false;
     const birthDate = new Date(date);
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -148,11 +122,9 @@ function validateEmail(email) {
 }
 
 function displayErrorSummary() {
-    let errorSummary = document.getElementById("errorsummary"); // Updated ID
-    if (!errorSummary)
-        return;
+    let errorSummary = document.getElementById("error-summary");
+    if (!errorSummary) return;
     let errors = [];
-
     document.querySelectorAll("input").forEach(input => {
         if (!input.checkValidity() || input.classList.contains("is-invalid")) {
             let labelElem = document.querySelector(`label[for="${input.id}"]`);
@@ -162,10 +134,9 @@ function displayErrorSummary() {
             if (errorText === "") {
                 errorText = input.validationMessage;
             }
-            errors.push("Problem in " + labelText + ": " + errorText);
+            errors.push("Problem in " + labelText + " " + errorText);
         }
     });
-
     if (errors.length > 0) {
         errorSummary.innerHTML = "<ul><li>" + errors.join("</li><li>") + "</li></ul>";
         errorSummary.classList.remove("d-none");
@@ -176,7 +147,7 @@ function displayErrorSummary() {
 }
 
 function hideErrorSummary() {
-    let errorSummary = document.getElementById("errorsummary"); // Updated ID
+    let errorSummary = document.getElementById("error-summary");
     if (errorSummary) {
         errorSummary.innerHTML = "";
         errorSummary.classList.add("d-none");

@@ -1,0 +1,72 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : 2 Mar 2025, 16:04:20
+    Author     : theda
+*/
+
+
+ body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 1rem;
+            background-color: #d1d3d4;
+            border: 1px solid #b0b3b5;
+        }
+
+        .card-header {
+            background-color: #d1d3d4;
+            padding: 10px;
+            border-bottom: 1px solid #b0b3b5;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .card-body {
+            background-color: #d1d3d4; /* Same grey as card, no white background */
+            padding: 30px;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border: 1px solid #0d6efd;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border: 1px solid #0056b3;
+        }
+
+        .form-control {
+            background-color: white; /* White background for inputs */
+            border: 1px solid #ced4da; /* Lighter border */
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #0d6efd;
+        }
+
+        .text-center a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+
+        .text-center a:hover {
+            color: #0056b3;
+        }
+
+        /* New CSS for message container */
+        #message-container {
+            background-color: #d1d3d4; /* Grey background like the card */
+            border-radius: 1rem; /* Rounded corners like the card */
+            padding: 15px; /* Padding to give it some space */
+            border: 1px solid #b0b3b5; /* Border similar to the card */
+            margin-top: 10px; /* Add some space above it */
+        }
+

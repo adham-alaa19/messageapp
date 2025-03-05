@@ -24,15 +24,13 @@ public class Home extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
-        if(SessionManager.isLoggedIn(request)){
-      request.getRequestDispatcher("includes/header.jsp").include(request, response);
-      request.getRequestDispatcher("includes/navbar.html").include(request, response);
-      request.getRequestDispatcher("pages/customer_pages/home.html").include(request, response);
-      request.getRequestDispatcher("includes/footer.html").include(request, response);
-    }else 
-         response.sendRedirect("loginsession?Logged=False");
-
-         } catch(Exception e) {
+      request.setAttribute("pageTitle", "Customers Home");
+      request.getRequestDispatcher("../../includes/header.jsp").include(request, response);
+      request.getRequestDispatcher("../../includes/navbars/navbar.html").include(request, response);
+      request.getRequestDispatcher("../../pages/customer_pages/home.html").include(request, response);
+      request.getRequestDispatcher("../../includes/footer.html").include(request, response);
+    }
+          catch(Exception e) {
              System.out.println("ERRORTTTT");
              e.printStackTrace();
          }

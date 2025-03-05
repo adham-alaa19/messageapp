@@ -17,21 +17,48 @@ public class UserValidator {
                                                  String job, String governorate, String district, String street,
                                                  String buildingNoStr, String msisdn) {
         ArrayList<String> errors = new ArrayList<>();
-
-        if (!validateOnlyLetters(firstName)) errors.add("invalid=firstName");
-        if (!validateOnlyLetters(lastName)) errors.add("invalid=lastName");
-        if (!validateBirthDate(birthDateString)) errors.add("invalid=birthDate");
+       
+        if (!validateOnlyLetters(firstName)) errors.add("invalid=firstname");
+        if (!validateOnlyLetters(lastName)) errors.add("invalid=lastname");
+        if (!validateBirthDate(birthDateString)) errors.add("invalid=birthdate");
         if (!validateEmail(email)) errors.add("invalid=email");
         if (!validatePassword(password)) errors.add("invalid=password");
-        if (!password.equals(confirmPassword)) errors.add("invalid=passwordMismatch");
+        if (!password.equals(confirmPassword)) errors.add("invalid=passwordmismatch");
         if (!validateMsisdn(msisdn)) errors.add("invalid=msisdn");
         if (!validateOnlyLetters(governorate)) errors.add("invalid=governorate");
         if (!validateOnlyLetters(district)) errors.add("invalid=district");
         if (!validateOnlyLetters(street)) errors.add("invalid=street");
-        if (!validateBuildingNo(buildingNoStr)) errors.add("invalid=buildingNo");
+        if (!validateBuildingNo(buildingNoStr)) errors.add("invalid=buildingno");
+//         for(String error : errors)
+//         {
+//              System.out.println(error);
+//         }
+        return errors;
+    }
+
+
+
+public static ArrayList<String> validateUpdate(String firstName, String lastName, String birthDateString,
+                                                   String email, String job, String governorate, String district,
+                                                   String street, String buildingNoStr, String msisdn) {
+        ArrayList<String> errors = new ArrayList<>();
+
+        if (firstName != null && !validateOnlyLetters(firstName)) errors.add("invalid=firstname");
+        if (lastName != null && !validateOnlyLetters(lastName)) errors.add("invalid=lastname");
+        if (birthDateString != null && !validateBirthDate(birthDateString)) errors.add("invalid=birthdate");
+        if (email != null && !validateEmail(email)) errors.add("invalid=email");
+        if (msisdn != null && !validateMsisdn(msisdn)) errors.add("invalid=msisdn");
+        if (governorate != null && !validateOnlyLetters(governorate)) errors.add("invalid=governorate");
+        if (district != null && !validateOnlyLetters(district)) errors.add("invalid=district");
+        if (street != null && !validateOnlyLetters(street)) errors.add("invalid=street");
+        if (buildingNoStr != null && !validateBuildingNo(buildingNoStr)) errors.add("invalid=buildingno");
 
         return errors;
     }
+ 
+
+
+
 
     private static boolean validateOnlyLetters(String input) {
         return input != null && ONLY_LETTERS_VALIDATOR.isValid(input);
