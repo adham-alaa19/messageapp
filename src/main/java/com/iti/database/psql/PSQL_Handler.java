@@ -343,35 +343,32 @@ public class PSQL_Handler implements DB_Handler {
             throw new RuntimeException("Error executing query: " + query, e);
         }
     }
-
+    
+    
     @Override
-    public <T> List<Map<String, Object>> executeSelectQuery(String query, Class<T> tableClass) {
-        List<Map<String, Object>> rows = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
-
-            Field[] fields = tableClass.getDeclaredFields();
-            while (rs.next()) {
-                Map<String, Object> row = new LinkedHashMap<>();
-                for (Field field : fields) {
-                    field.setAccessible(true);
-                    String columnName = field.getName();
-                    Object dbValue = rs.getObject(columnName);
-
-                    if (PSQLComposite.class.isAssignableFrom(field.getType())) {
-                        String compStr = rs.getString(columnName);
-                        if (compStr != null) {
-                            dbValue = PSQLCompositeHelper.parseComposite(compStr, field.getType());
-                        }
-                    }
-                    row.put(columnName, dbValue);
-                }
-                rows.add(row);
+public List<Map<String, Object>> executeSelectQuery(String query) {
+    List<Map<String, Object>> rows = new ArrayList<>();
+    try (PreparedStatement stmt = connection.prepareStatement(query);
+         ResultSet rs = stmt.executeQuery()) {
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        while (rs.next()) {
+            Map<String, Object> row = new LinkedHashMap<>();
+            for (int i = 1; i <= columnCount; i++) {
+                String columnName = metaData.getColumnName(i); 
+                Object columnValue = rs.getObject(i);
+                row.put(columnName, columnValue);
             }
-        } catch (SQLException | ReflectiveOperationException e) {
-            throw new RuntimeException("Error executing select query: " + query, e);
+
+            // Add the row to the result list
+            rows.add(row);
         }
-        return rows;
+    } catch (SQLException e) {
+        throw new RuntimeException("Error executing select query: " + query, e);
     }
+
+    return rows;
+}
 
     @Override
     public <T> List<Map<String, Object>> joinTables(Class<T> leftTableClass, Class<T> rightTableClass, String joinColumn1, String joinColumn2) {
@@ -420,7 +417,6 @@ public class PSQL_Handler implements DB_Handler {
                     T entity = tableClass.getDeclaredConstructor().newInstance();
                     for (Field field : fields) {
                         field.setAccessible(true);
-
                         Object dbValue = rs.getObject(field.getName());
                         if (dbValue != null) {
                             if (field.getType().isEnum() && dbValue instanceof String) {
@@ -440,6 +436,11 @@ public class PSQL_Handler implements DB_Handler {
         return results;
     }
 
+    
+    
+    
+
+   
     @Override
     public <T> T updateByValue(T entity, ConditionBuilder cdb) {
         Class<?> myClass = entity.getClass();
@@ -515,5 +516,40 @@ public class PSQL_Handler implements DB_Handler {
             throw new RuntimeException("Error deleting entity", e);
         }
     }
+    
+    
+
+//
+//    @Override
+//    public <T> List<Map<String, Object>> joinTables(Class<T> leftTableClass, Class<T> rightTableClass, String joinColumn1, String joinColumn2) {
+//        List<Map<String, Object>> results = new ArrayList<>();
+//        String leftTableName = leftTableClass.getSimpleName();
+//        String rightTableName = rightTableClass.getSimpleName();
+//
+//        String query = "SELECT * FROM " + leftTableName + " JOIN " + rightTableName
+//                + " ON " + leftTableName + "." + joinColumn1 + " = " + rightTableName + "." + joinColumn2;
+//
+//        try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+//
+//            ResultSetMetaData metaData = rs.getMetaData();
+//            int columnCount = metaData.getColumnCount();
+//
+//            while (rs.next()) {
+//                Map<String, Object> row = new LinkedHashMap<>();
+//                for (int i = 1; i <= columnCount; i++) {
+//                    String columnName = metaData.getColumnName(i);
+//                    row.put(columnName, rs.getObject(i));
+//                }
+//                results.add(row);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException("Error joining tables", e);
+//        }
+//
+//        return results;
+//    }
+
+     
+
 
 }

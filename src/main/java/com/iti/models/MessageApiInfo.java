@@ -4,8 +4,8 @@ public interface MessageApiInfo {
     int getApi_id();
     void setApi_id(int api_id);
 
-    String getApi_name();
-    void setApi_name(String api_name);
+    String getApi_code();
+    void setApi_code(String api_name);
 
     String getApi_key();
     void setApi_key(String api_key);
@@ -15,4 +15,7 @@ public interface MessageApiInfo {
 
     String getSender_id();
     void setSender_id(String sender_id);
+    
+    int  getCustomer_id();
+    void setCustomer_id(int Customer_id);
 }

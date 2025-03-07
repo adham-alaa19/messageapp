@@ -1,12 +1,42 @@
- package com.iti.models;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.iti.models;
 
-public class TwilioApiInfo implements MessageApiInfo {
-    private int api_id;
-    private String api_name;
+import com.iti.api.API_ENUM;
+
+/**
+ *
+ * @author theda
+ */
+
+public class Api_Info implements MessageApiInfo {
+    private Integer api_id;
+    private String api_code;
     private String api_key;
     private String api_secret;
     private String sender_id;
     private Integer customer_id;
+    
+    
+    
+    
+    public Api_Info(){
+        
+    }
+    
+    
+    public Api_Info(String api_code,String api_key,String api_secret,String sender_id, Integer customer_id){
+     this.api_code=api_code;
+     this.api_key=api_key;
+     this.api_secret=api_secret;
+     this.sender_id=sender_id;
+     this.customer_id=customer_id;
+   
+    }
+    
+    
 
     @Override
     public int getApi_id() {
@@ -20,12 +50,12 @@ public class TwilioApiInfo implements MessageApiInfo {
 
     @Override
     public String getApi_code() {
-        return api_name;
+        return api_code;
     }
 
     @Override
-    public void setApi_code(String api_name) {
-        this.api_name = api_name;
+    public void setApi_code(String api_code) {
+        this.api_code = api_code;
     }
 
     @Override
@@ -58,7 +88,8 @@ public class TwilioApiInfo implements MessageApiInfo {
         this.sender_id = sender_id;
     }
     
-        @Override
+    
+    @Override
     public int getCustomer_id() {
         return customer_id;
     }
@@ -68,3 +99,4 @@ public class TwilioApiInfo implements MessageApiInfo {
         this.customer_id = customer_id;
     }
 }
+

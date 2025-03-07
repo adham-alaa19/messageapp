@@ -26,7 +26,7 @@ public class Home extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
       request.setAttribute("pageTitle", "Customers Home");
       request.getRequestDispatcher("../../includes/header.jsp").include(request, response);
-      request.getRequestDispatcher("../../includes/navbars/navbar.html").include(request, response);
+      request.getRequestDispatcher("../../includes/navbars/customerbar.jsp").include(request, response);
       request.getRequestDispatcher("../../pages/customer_pages/home.html").include(request, response);
       request.getRequestDispatcher("../../includes/footer.html").include(request, response);
     }

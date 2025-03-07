@@ -7,8 +7,12 @@ package com.iti.managers.session;
 import com.iti.models.Admin;
 import com.iti.models.Customer;
 import com.iti.models.IUser;
+import com.iti.models.Pub_API_INFO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -24,6 +28,24 @@ public class SessionManager {
     public static void startSession(HttpServletRequest request, IUser user) {
         HttpSession mySession = request.getSession(true);
         mySession.setAttribute("user", user);
+    }
+    
+    
+    public static void setSessionApiList(HttpServletRequest request, List<Pub_API_INFO> apiInfoList) {
+        HttpSession mySession = request.getSession(false);
+        mySession.setAttribute("apiList", apiInfoList);
+        if(apiInfoList.isEmpty())
+            mySession.setAttribute("currentApi", -1);
+        else 
+        {  int firstId = apiInfoList.get(0).getApi_id();
+           mySession.setAttribute("currentApi", firstId);
+        }
+
+    }
+    
+        public static void setSessionApi(HttpServletRequest request, int id) {
+        HttpSession mySession = request.getSession(false);
+        mySession.setAttribute("currentApi", id);
     }
 
     public static void endSession(HttpServletRequest request) {
@@ -68,5 +90,21 @@ public class SessionManager {
             return null;
         }
     }
+    
+    public static List<Pub_API_INFO> getSessionApiInfoList(HttpServletRequest request) {
+        HttpSession mySession = request.getSession(false);
+        List<Pub_API_INFO> list = (List<Pub_API_INFO>) mySession.getAttribute("apiList");
+        return list;
+        
+    }
+    
+    
+    public static Integer getSessionApiInfo(HttpServletRequest request) {
+        HttpSession mySession = request.getSession(false);
+        Integer id = (Integer) mySession.getAttribute("currentApi");
+        return id;
+    }
+    
+ 
 
 }

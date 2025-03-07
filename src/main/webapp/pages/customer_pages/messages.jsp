@@ -1,6 +1,8 @@
  <%@page import="com.iti.models.Message"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,12 +24,12 @@
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="home">
+                        <a class="nav-link" href="adminHome">
                             <i class="fas fa-home"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="history">
+                        <a class="nav-link active" href="SearchServlet">
                             <i class="fas fa-envelope"></i> Messages
                         </a>
                     </li>
@@ -40,7 +42,48 @@
             <div class="container mt-4">
                 <h2><i class="fas fa-envelope"></i> Message Management</h2>
 
-                <!-- Messages Table -->
+                <!-- Search Bar -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form action="history" method="POST">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="from">From</label>
+                                    <input type="text" class="form-control" id="from" name="from" placeholder="Sender">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="to">To</label>
+                                    <input type="text" class="form-control" id="to" name="to" placeholder="Receiver">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" name="startDate">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="endDate">End Date</label>
+                                    <input type="date" class="form-control" id="endDate" name="endDate">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Error message if date parsing failed -->
+                <% if (request.getAttribute("errorMessage") != null) { %>
+                <div class="alert alert-danger mb-4">
+                    <%= request.getAttribute("errorMessage") %>
+                </div>
+                <% } %>
+
+                <!-- Messages Table (Conditional) -->
+                <%
+                    List<Message> messages = (List<Message>) request.getAttribute("messages");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    if (messages != null && !messages.isEmpty()) {
+                %>
                 <div class="card">
                     <div class="card-body">
                         <table class="table table-hover">
@@ -55,17 +98,19 @@
                             </thead>
                             <tbody>
                                 <%
-                                    List<Message> messages = (List<Message>) request.getAttribute("messages");
-                                    if (messages != null) {
-                                        for (Message message : messages) {
+                                    for (Message message : messages) {
+                                        String formattedDate = "";
+                                        if (message.getMsg_date() != null) {
+                                            formattedDate = dateFormat.format(message.getMsg_date());
+                                        }
                                 %>
                                 <tr>
                                     <td><%= message.getMsg_from() %></td>
                                     <td><%= message.getMsg_to() %></td>
                                     <td><%= message.getBody() %></td>
-                                    <td><%= message.getMsg_date() %></td>
+                                    <td><%= formattedDate %></td>
                                     <td>
-                                        <form action="history" method="post" style="display:inline;">
+                                        <form action="deletemessage" method="post" style="display:inline;">
                                             <input type="hidden" name="action" value="delete">
                                             <input type="hidden" name="messageId" value="<%= message.getMsg_id() %>">
                                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this message?');">
@@ -75,16 +120,24 @@
                                     </td>
                                 </tr>
                                 <%
-                                        }
                                     }
                                 %>
                             </tbody>
                         </table>
                     </div>
                 </div>
+                <%
+                    } else if (messages != null && messages.isEmpty()) {
+                %>
+                <div class="alert alert-info mt-4">
+                    No messages found matching your search criteria.
+                </div>
+                <%
+                    }
+                %>
 
                 <a href="home" class="btn btn-secondary mt-3">
-                    <i class="fas fa-arrow-left"></i> Back to Admin Home
+                    <i class="fas fa-arrow-left"></i> Back to Home
                 </a>
             </div>
         </div>

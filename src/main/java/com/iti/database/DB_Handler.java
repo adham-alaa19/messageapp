@@ -21,7 +21,7 @@ public interface DB_Handler {
     boolean deleteByValue(Class<?> tableClass, ConditionBuilder cdb);
   
     void executeQuery(String query);
-     <T> List<Map<String, Object>> executeSelectQuery(String query, Class<T> tableClass);
+     <T> List<Map<String, Object>> executeSelectQuery(String query);
 
 
     

@@ -73,7 +73,7 @@ public int getMessageCount2(int userId) {
             customer= users.get(0);
         }
     String query = "SELECT COUNT(*) AS message_count FROM message WHERE msg_from = " + "'"+customer.getMsisdn()+ "';";
-    List<Map<String, Object>> result = dbh.executeSelectQuery(query, Message.class);
+    List<Map<String, Object>> result = dbh.executeSelectQuery(query);
     dbh.disconnect();
     if (!result.isEmpty()) {
         System.out.println("");

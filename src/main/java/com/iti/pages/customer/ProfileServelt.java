@@ -30,7 +30,7 @@ public class ProfileServelt extends HttpServlet {
         Customer customer = SessionManager.getSessionCustomer(request);
         request.setAttribute("customer", customer);
         request.getRequestDispatcher("../../includes/header.jsp").include(request, response);
-        request.getRequestDispatcher("../../includes/navbars/navbar.html").include(request, response);
+        request.getRequestDispatcher("../../includes/navbars/customerbar.jsp").include(request, response);
         request.getRequestDispatcher("../../pages/customer_pages/profile.jsp").include(request, response);
         request.getRequestDispatcher("../../includes/footer.html").include(request, response);
     }

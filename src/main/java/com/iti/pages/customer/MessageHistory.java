@@ -9,63 +9,66 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @WebServlet(name = "MessageHistory", urlPatterns = {"/app/customer/history"})
 public class MessageHistory extends HttpServlet {
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if ("delete".equals(action)) {
-            String messageId = request.getParameter("messageId");
-            if (messageId != null && !messageId.isEmpty()) {
-                // Delete the message
-                MessageManager messageManager = new MessageManager();
-                messageManager.open();
-               
-                boolean isDeleted = messageManager.deleteMessage( Integer.parseInt(messageId));
-                messageManager.close();
-
-                if (isDeleted) {
-                    // Redirect to the same page to refresh the message list
-                    response.sendRedirect("history");
-                    return;
-                } else {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete message");
-                    return;
-                }
-            }
-        }
-
-        // Fetch messages and forward to JSP
-        fetchMessagesAndForward(request, response);
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Fetch messages and forward to JSP
         fetchMessagesAndForward(request, response);
-    }
 
+    }
     private void fetchMessagesAndForward(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Initialize the MessageManager
         MessageManager messageManager = new MessageManager();
         messageManager.open();
+        int fromId = SessionManager.getSessionCustomer(request).getId();
+        List<Message> messages = messageManager.getUserMessages(fromId);
+        messageManager.close();
+        request.setAttribute("messages", messages);
+        request.getRequestDispatcher("../../pages/customer_pages/messages.jsp").forward(request, response);
+    }
 
-        // Fetch messages for the user
-        String phone = SessionManager.getSessionCustomer(request).getMsisdn(); // Replace with dynamic username if needed
-        List<Message> messages = messageManager.getUserMessages(phone);
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String from = request.getParameter("from");
+        String to = request.getParameter("to");
+        String startDateStr = request.getParameter("startDate");
+        String endDateStr = request.getParameter("endDate");
+        Timestamp startDate = null;
+        Timestamp endDate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        // Close the MessageManager
+        try {
+            if (startDateStr != null && !startDateStr.isEmpty()) {
+                Date parsedStartDate = dateFormat.parse(startDateStr);
+                startDate = new Timestamp(parsedStartDate.getTime());
+            }
+            if (endDateStr != null && !endDateStr.isEmpty()) {
+                Date parsedEndDate = dateFormat.parse(endDateStr);
+                endDate = new Timestamp(parsedEndDate.getTime());
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid date format. Use yyyy-MM-dd.");
+            return; }
+        MessageManager messageManager = new MessageManager();
+        messageManager.open();
+        int fromId = SessionManager.getSessionCustomer(request).getId();
+
+        List<Message> messages = messageManager.searchMessages(fromId, from, to, startDate, endDate, null);
+
         messageManager.close();
 
-        // Set the messages as a request attribute
         request.setAttribute("messages", messages);
 
-        // Forward the request to the JSP page
         request.getRequestDispatcher("../../pages/customer_pages/messages.jsp").forward(request, response);
     }
 }

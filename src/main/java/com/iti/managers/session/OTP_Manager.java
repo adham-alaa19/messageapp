@@ -1,6 +1,7 @@
 package com.iti.managers.session;
 
 import com.iti.managers.messages.SendManager;
+import com.iti.models.Api_Info;
 import com.iti.models.TwilioApiInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -8,12 +9,12 @@ import java.security.SecureRandom;
 
 public class OTP_Manager {
 
-    private static final TwilioApiInfo API_INFO;
+    private static final Api_Info API_INFO;
 
     static {
-        API_INFO = new TwilioApiInfo();
+        API_INFO = new  Api_Info();
         API_INFO.setApi_id(1);
-        API_INFO.setApi_name("Twilio");
+        API_INFO.setApi_code("TWI");
         API_INFO.setApi_key("ACd1eda764f9e664be3af9b4cca24070be");
         API_INFO.setApi_secret("ab8a744eeb04f143db6d1f95542e6582");
         API_INFO.setSender_id("18789999397");
@@ -69,7 +70,7 @@ public class OTP_Manager {
         session.setAttribute("otp", otp);
         session.setAttribute("otp_expiry", generateExpiryTime(2));
         SendManager sender = new SendManager();
-        sender.sendSmsMessage(API_INFO, phone, otp);
+        sender.sendApiMessage(API_INFO, phone, otp);
         
     }
 

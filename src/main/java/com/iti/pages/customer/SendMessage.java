@@ -5,6 +5,7 @@
 package com.iti.pages.customer;
 
 import com.iti.managers.messages.SendManager;
+import com.iti.managers.session.SessionManager;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -28,7 +29,7 @@ public class SendMessage extends HttpServlet {
                 request.setAttribute("pageTitle", "SendMessages");
                 request.setAttribute("cssFile", "../../static/css/customer_pages/send.css");
                 request.getRequestDispatcher("../../includes/header.jsp").include(request, response);
-                request.getRequestDispatcher("../../includes/navbars/navbar.html").include(request, response);
+                request.getRequestDispatcher("../../includes/navbars/customerbar.jsp").include(request, response);
                 request.getRequestDispatcher("../../pages/customer_pages/send.html").include(request, response);
                 request.getRequestDispatcher("../../includes/footer.html").include(request, response);
            
@@ -48,7 +49,8 @@ public class SendMessage extends HttpServlet {
                 String body =request.getParameter("body");
                 System.out.println( from + " " + to + " " + body);
                 SendManager sendManager=new SendManager();
-                sendManager.sendMessage(from, to, body);
+                int apiId = SessionManager.getSessionApiInfo(request);
+                sendManager.sendMessage(apiId, to, body);
         } catch (Exception e) {
             System.out.println("ERRORTTTT");
             e.printStackTrace();

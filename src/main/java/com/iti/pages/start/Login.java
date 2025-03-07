@@ -1,7 +1,9 @@
 package com.iti.pages.start;
+import com.iti.managers.messages.ApiInfoManager;
 import com.iti.managers.session.SessionManager;
 import com.iti.managers.users.UserManager;
 import com.iti.models.IUser;
+import com.iti.models.Pub_API_INFO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -9,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
@@ -46,7 +49,12 @@ public class Login extends HttpServlet {
        if(usrmanager.isAdmin(user))
            response.sendRedirect("app/admin/home");
        else
+       {
+            ApiInfoManager apiManager = new ApiInfoManager();
+            List<Pub_API_INFO> apiInfoList = apiManager.getUserApiInfo(user.getId());
+            SessionManager.setSessionApiList(request, apiInfoList);
             response.sendRedirect("app/customer/home");
+       }
       } else
         response.sendRedirect("login?WrongPassword=True");
       }

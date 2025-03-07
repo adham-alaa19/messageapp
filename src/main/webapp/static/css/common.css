@@ -50,3 +50,26 @@ body {
     bottom: 0;
     width: 100%;
 }
+
+
+.api-container {
+    display: flex;
+    text-align: right;
+    margin-right: -350px; /* Adjust to push it to the right */
+}
+
+.api-dropdown {
+    background-color: #d1d3d4; /* Same as navbar */
+    color: black;
+    border: 1px solid #b0b3b5;
+        width: 140px; /* Increased width */
+    padding: 5px;
+    cursor: pointer;
+    
+}
+
+/* Ensure dropdown text is readable */
+.api-dropdown:disabled {
+    color: #6c757d;
+    cursor: not-allowed;
+}
