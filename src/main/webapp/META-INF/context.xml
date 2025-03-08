@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--<Context path="/MessageMavenProject"/>-->
 <Context path="/MessagerClient">
-  <Resource auth="Container" driverClassName="org.postgresql.Driver" maxIdle="10" maxTotal="20" maxWaitMillis="10000" name="jdbc/myDB" password="12345" type="javax.sql.DataSource" url="jdbc:postgresql://localhost:5432/messaging_app" username="postgres"/>
+  <Resource auth="Container" driverClassName="org.postgresql.Driver" maxIdle="10" maxTotal="20" maxWaitMillis="10000" name="jdbc/myDB" password="redhat" type="javax.sql.DataSource" url="jdbc:postgresql://localhost:5432/messaging_app" username="postgres"/>
 </Context>

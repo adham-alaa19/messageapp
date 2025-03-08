@@ -58,13 +58,13 @@ public class EditCustomer extends HttpServlet {
         try {
             birthDate = java.sql.Date.valueOf(birthDateString);
         } catch (IllegalArgumentException e) {
-            // Should not occur if validation passed
+            
         }
         int buildingNo = 1;
         try {
             buildingNo = Integer.parseInt(buildingNoStr);
         } catch (NumberFormatException e) {
-            // Should not occur if validation passed
+            
         }
         CustomerManager customerManager = new CustomerManager();
         try {

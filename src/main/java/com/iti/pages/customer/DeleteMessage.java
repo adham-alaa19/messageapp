@@ -26,7 +26,7 @@ public class DeleteMessage extends HttpServlet {
         if ("delete".equals(action)) {
             String messageId = request.getParameter("messageId");
             if (messageId != null && !messageId.isEmpty()) {
-                // Delete the message
+               
                 MessageManager messageManager = new MessageManager();
                 messageManager.open();
                 Integer.parseInt(messageId);
@@ -34,7 +34,7 @@ public class DeleteMessage extends HttpServlet {
                 messageManager.close();
 
                 if (isDeleted) {
-                    // Redirect to the same page to refresh the message list
+                  
                     response.sendRedirect("history");
                     return;
                 } else {
