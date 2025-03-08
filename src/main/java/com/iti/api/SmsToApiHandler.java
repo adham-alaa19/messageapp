@@ -4,13 +4,15 @@
  */
 package com.iti.api;
 
-import com.iti.models.MessageApiInfo;
+import com.iti.models.messages.MessageApiInfo;
 
 /**
  *
  * @author theda
  */
-public class MailApiHandler implements MessageApiHandler {
+
+// (the api service provider Name is called SMS.to)
+public class SmsToApiHandler implements MessageApiHandler {
 
     @Override
     public boolean sendMessage(MessageApiInfo msgInfo, String to, String body) {

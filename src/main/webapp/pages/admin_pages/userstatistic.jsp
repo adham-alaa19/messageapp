@@ -1,4 +1,4 @@
- <%@page import="com.iti.models.Customer"%>
+ <%@page import="com.iti.models.users.Customer"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
@@ -28,7 +28,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="userstatistic">
+                        <a class="nav-link active" href="viewusers">
                             <i class="fas fa-users"></i> Users
                         </a>
                     </li>

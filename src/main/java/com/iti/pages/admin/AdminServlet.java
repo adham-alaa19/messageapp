@@ -7,7 +7,7 @@ package com.iti.pages.admin;
 
 
 import com.iti.managers.users.AdminManager;
-import com.iti.models.Customer;
+import com.iti.models.users.Customer;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

@@ -6,6 +6,7 @@ package com.iti.filters;
 
 import com.iti.managers.session.SessionManager;
 import java.io.IOException;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -20,36 +21,27 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author theda
  */
-@WebFilter(urlPatterns = {"/app/customer/*"})
-public class CustomerFilter implements Filter {
-    
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
-    
-    @Override
-    public void destroy() {
-    }
+@WebFilter(filterName = "SendFilter", urlPatterns = {"/app/customer/send"}, dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD})
+public class SendFilter implements Filter {
 
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-    
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        String fullURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + httpRequest.getContextPath(); 
-        if (!SessionManager.isCustomerSession(httpRequest)) {
-            httpResponse.sendRedirect(fullURL+"/app/admin/home");
+        HttpServletRequest httpreq = (HttpServletRequest) request;
+        HttpServletResponse httpres = (HttpServletResponse) response;
+        int apiId = SessionManager.getSessionApiInfo(httpreq);
+        if (apiId == -1) {
+            httpres.sendRedirect("addApiInfo");
             return;
         }
-        
-        if (!SessionManager.getSessionCustomer(httpRequest).is_valid()) {
-            httpResponse.sendRedirect(fullURL+"/otp-send");
-            return;
-        }
+       chain.doFilter(request, response);
+    }
 
-        chain.doFilter(request, response);
+    public void destroy() {
+    }
+
+    public void init(FilterConfig filterConfig) {
+
     }
 
 }

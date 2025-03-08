@@ -1,4 +1,4 @@
-package com.iti.pages.customer;
+package com.iti.pages.admin;
 
 import com.iti.exceptions.CustomerNotFoundException;
 import com.iti.managers.session.SessionManager;
@@ -15,29 +15,28 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 
-@WebServlet(name = "EditCustomer", urlPatterns = {"/app/customer/edit_customer"})
-public class EditCustomer extends HttpServlet {
+@WebServlet(name = "EditCustomer", urlPatterns = {"/app/admin/edit_customer"})
+public class EditCustomerAdmin extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-         Customer customer = SessionManager.getSessionCustomer(request);
+        CustomerManager customeManager = new CustomerManager();
+
+        Customer customer = customeManager.getCustomerByPubid(request.getParameter("uid"));
 
         request.setAttribute("customer", customer);
 
-        request.getRequestDispatcher("../../pages/customer_pages/editCustomer.jsp").forward(request, response);
+        request.getRequestDispatcher("../../pages/admin_pages/editCustomer.jsp").forward(request, response);
     }
-   
-    
-    
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Retrieve parameters from the edit form
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
+        String pubid = request.getParameter("uid");
         String birthDateString = request.getParameter("birthdate");
         String email = request.getParameter("email");
         String job = request.getParameter("job");
@@ -53,7 +52,7 @@ public class EditCustomer extends HttpServlet {
             response.sendRedirect("editCustomer.jsp?" + String.join("&", errors));
             return;
         }
-        
+
         Date birthDate = null;
         try {
             birthDate = java.sql.Date.valueOf(birthDateString);
@@ -68,15 +67,14 @@ public class EditCustomer extends HttpServlet {
         }
         CustomerManager customerManager = new CustomerManager();
         try {
-            
-           Customer customer = SessionManager.getSessionCustomer(request);
-           Customer updatedCustomer  = customerManager.updateCustomer(customer.getId(),firstName, lastName, birthDate, email,
-                    job, governorate, district,street, buildingNo, phone);
-            SessionManager.startSession(request, updatedCustomer);
-            response.sendRedirect("profile");
+            System.out.println("HERERERERER =___="+pubid);
+            Customer customer = customerManager.getCustomerByPubid(pubid);
+            customerManager.updateCustomer(customer.getId(), firstName, lastName, birthDate, email,
+                    job, governorate, district, street, buildingNo, phone);
+            response.sendRedirect("viewusers");
         } catch (CustomerNotFoundException ex) {
-           response.sendRedirect("EditCustomer?NotFound=True");
+            response.sendRedirect("edit_customer?NotFound=True");
         }
-}   
+    }
 
 }

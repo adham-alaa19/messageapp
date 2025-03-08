@@ -138,6 +138,9 @@ public class PSQL_Handler implements DB_Handler {
                             Object dbValue = rs.getObject(field.getName());
                             if (dbValue != null) {
                                 try {
+                                    if (field.getType().isEnum() && dbValue instanceof String) {
+                                        dbValue = Enum.valueOf((Class<Enum>) field.getType(), (String) dbValue);
+                                    }
                                     field.set(entity, dbValue);
                                 } catch (IllegalAccessException ex) {
                                     Logger.getLogger(PSQL_Handler.class.getName()).log(Level.SEVERE, null, ex);
@@ -242,7 +245,6 @@ public class PSQL_Handler implements DB_Handler {
                             }
                         }
 
-                      
                     }
                 }
             }
@@ -308,6 +310,9 @@ public class PSQL_Handler implements DB_Handler {
                         } else {
                             Object dbValue = rs.getObject(field.getName());
                             if (dbValue != null) {
+                                if (field.getType().isEnum() && dbValue instanceof String) {
+                                    dbValue = Enum.valueOf((Class<Enum>) field.getType(), (String) dbValue);
+                                }
                                 field.set(entity, dbValue);
                             }
                         }
@@ -343,32 +348,33 @@ public class PSQL_Handler implements DB_Handler {
             throw new RuntimeException("Error executing query: " + query, e);
         }
     }
-    
-    
+
     @Override
-public List<Map<String, Object>> executeSelectQuery(String query) {
-    List<Map<String, Object>> rows = new ArrayList<>();
-    try (PreparedStatement stmt = connection.prepareStatement(query);
-         ResultSet rs = stmt.executeQuery()) {
-        ResultSetMetaData metaData = rs.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        while (rs.next()) {
-            Map<String, Object> row = new LinkedHashMap<>();
-            for (int i = 1; i <= columnCount; i++) {
-                String columnName = metaData.getColumnName(i); 
-                Object columnValue = rs.getObject(i);
-                row.put(columnName, columnValue);
-            }
-
-            // Add the row to the result list
-            rows.add(row);
+    public List<Map<String, Object>> executeSelectQuery(String query) {
+        List<Map<String, Object>> rows = new ArrayList<>();
+        if (connection == null) {
+            connect();
         }
-    } catch (SQLException e) {
-        throw new RuntimeException("Error executing select query: " + query, e);
-    }
+        try (PreparedStatement stmt = connection.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            while (rs.next()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = metaData.getColumnName(i);
+                    Object columnValue = rs.getObject(i);
+                    row.put(columnName, columnValue);
+                }
 
-    return rows;
-}
+                // Add the row to the result list
+                rows.add(row);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error executing select query: " + query, e);
+        }
+
+        return rows;
+    }
 
     @Override
     public <T> List<Map<String, Object>> joinTables(Class<T> leftTableClass, Class<T> rightTableClass, String joinColumn1, String joinColumn2) {
@@ -436,11 +442,6 @@ public List<Map<String, Object>> executeSelectQuery(String query) {
         return results;
     }
 
-    
-    
-    
-
-   
     @Override
     public <T> T updateByValue(T entity, ConditionBuilder cdb) {
         Class<?> myClass = entity.getClass();
@@ -516,8 +517,6 @@ public List<Map<String, Object>> executeSelectQuery(String query) {
             throw new RuntimeException("Error deleting entity", e);
         }
     }
-    
-    
 
 //
 //    @Override
@@ -548,8 +547,4 @@ public List<Map<String, Object>> executeSelectQuery(String query) {
 //
 //        return results;
 //    }
-
-     
-
-
 }

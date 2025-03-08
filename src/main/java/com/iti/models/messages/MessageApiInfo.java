@@ -1,4 +1,4 @@
- package com.iti.models;
+ package com.iti.models.messages;
 
 public interface MessageApiInfo {
     int getApi_id();

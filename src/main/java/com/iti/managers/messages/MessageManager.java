@@ -8,7 +8,7 @@ import com.iti.database.ConditionBuilder;
 import com.iti.database.DB_Handler;
 import com.iti.database.SQL_Condition;
 import com.iti.database.psql.PSQL_Handler;
-import com.iti.models.Message;
+import com.iti.models.messages.Message;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -20,8 +20,8 @@ public class MessageManager {
 
     private DB_Handler dbHandler;
 
-    public void createMessage(String from, String to, String body, String status) {
-        Message message = new Message(from, to, body, status);
+    public void createMessage(String from, String to, String body, String status,int cid) {
+        Message message = new Message(from, to, body, status,cid);
         DB_Handler dbHandler = new PSQL_Handler();
         dbHandler.connect();
         dbHandler.create(message);

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
  */
-package com.iti.models;
+package com.iti.models.messages;
 import com.iti.database.psql.PSQL_ENUM;
 
 /**

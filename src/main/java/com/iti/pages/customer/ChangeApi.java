@@ -17,13 +17,13 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author theda
  */
-@WebServlet(name = "ChangeApi", urlPatterns = {"/app/customer/changeapi"})
+@WebServlet(name = "ChangeApi", urlPatterns = {"/app/customer/changeApi"})
 public class ChangeApi extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String apiIdStr = request.getParameter("apiId");
+        String apiIdStr = request.getParameter("apiName");
         try {
             int apiId = Integer.parseInt(apiIdStr);
             System.out.println("Current API id=s "+apiId);

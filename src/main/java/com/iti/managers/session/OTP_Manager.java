@@ -1,25 +1,20 @@
 package com.iti.managers.session;
 
+import com.iti.managers.messages.ApiInfoManager;
 import com.iti.managers.messages.SendManager;
-import com.iti.models.Api_Info;
-import com.iti.models.TwilioApiInfo;
+import com.iti.models.messages.Api_Info;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.security.SecureRandom;
 
 public class OTP_Manager {
 
-    private static final Api_Info API_INFO;
-
-    static {
-        API_INFO = new  Api_Info();
-        API_INFO.setApi_id(1);
-        API_INFO.setApi_code("TWI");
-        API_INFO.setApi_key("ACd1eda764f9e664be3af9b4cca24070be");
-        API_INFO.setApi_secret("ab8a744eeb04f143db6d1f95542e6582");
-        API_INFO.setSender_id("18789999397");
+  
+    private final int apiId;
+    public OTP_Manager()
+    {
+        apiId=0;
     }
-
     public String generateOTP(int length) {
         SecureRandom random = new SecureRandom();
         StringBuilder otp = new StringBuilder();
@@ -64,13 +59,15 @@ public class OTP_Manager {
         return System.currentTimeMillis() > expiryTime;
     }
 
-    public void storeAndSendOTP(HttpServletRequest request,String phone) {
+    public void storeAndSendOTP(HttpServletRequest request,String mail) {
         HttpSession session = request.getSession(true);
         String otp =generateOTP(4);
         session.setAttribute("otp", otp);
         session.setAttribute("otp_expiry", generateExpiryTime(2));
         SendManager sender = new SendManager();
-        sender.sendApiMessage(API_INFO, phone, otp);
+        ApiInfoManager apiManager = new ApiInfoManager();
+        Api_Info apiInfo = apiManager.getApiInfoById(0);
+        sender.sendApiMessage(apiInfo, mail, otp);
         
     }
 
@@ -80,5 +77,18 @@ public class OTP_Manager {
             session.removeAttribute("otp");
             session.removeAttribute("otp_expiry");
         }
+    }
+    
+    public String getOtpType()
+    {
+        switch (apiId) {
+            case 0:
+                return "mail";
+            case 1:
+                return "phone";
+            default:
+                return "unsupported";
+        }
+
     }
 }

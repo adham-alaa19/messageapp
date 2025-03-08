@@ -89,7 +89,7 @@
                                 <input type="text" id="buildingno" name="buildingno" class="form-control" value="<%= customer.getAddress().getBuilding()%>">
                                 <div class="my-error" id="error-buildingno"></div>
                             </div>
-                            <input type="hidden" id="uid" name="uid" class="form-control" value="<%= customer.getCustomer_pub_id() %>">
+                            <input type="hidden" id="uid" name="uid" class="form-control" value="<%= customer.getCustomer_pub_id()%>">
 
                             <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
                             <a href="profile" class="btn btn-secondary">Cancel</a>

@@ -6,6 +6,8 @@ package com.iti.pages.customer;
 
 import com.iti.managers.messages.ApiInfoManager;
 import com.iti.managers.session.SessionManager;
+import com.iti.models.messages.Pub_API_INFO;
+import com.iti.models.users.Customer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -23,34 +25,37 @@ import java.util.Map;
 @WebServlet(name = "AddApi", urlPatterns = {"/app/customer/addApiInfo"})
 public class AddApi extends HttpServlet {
 
-   @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-       ApiInfoManager apiManager = new ApiInfoManager();
-     List<Map<String, String>> apiList = apiManager.getAvailableApi();
-    request.setAttribute("apiList", apiList);
-    request.getRequestDispatcher("../../pages/customer_pages/addAPI.jsp").forward(request, response);
-}
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ApiInfoManager apiManager = new ApiInfoManager();
+        List<Map<String, String>> apiList = apiManager.getAvailableApi();
+        request.setAttribute("apiList", apiList);
+        request.getRequestDispatcher("../../pages/customer_pages/addAPI.jsp").forward(request, response);
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-    String apiName = request.getParameter("api_name");
-    String apiKey = request.getParameter("api_key");
-    String apiSecret = request.getParameter("api_secret");
-    String senderId = request.getParameter("sender_id");
-    
-    if (apiName == null || apiName.trim().isEmpty() ||
-        apiKey == null || apiKey.trim().isEmpty() ||
-        apiSecret == null || apiSecret.trim().isEmpty() ||
-        senderId == null || senderId.trim().isEmpty()) 
-    {
-    response.sendRedirect("addApiInfo?Filled=False");
-    }
-    ApiInfoManager apiInfoManager = new ApiInfoManager();
-    int apiId = apiInfoManager.createApiInfo(apiName, apiKey, apiSecret, senderId, SessionManager.getSessionCustomer(request).getId()).getApi_id();
 
+        String apiName = request.getParameter("api_name");
+        String apiKey = request.getParameter("api_key");
+        String apiSecret = request.getParameter("api_secret");
+        String senderId = request.getParameter("sender_id");
+
+        if (apiName == null || apiName.trim().isEmpty()
+                || apiKey == null || apiKey.trim().isEmpty()
+                || apiSecret == null || apiSecret.trim().isEmpty()
+                || senderId == null || senderId.trim().isEmpty()) {
+            response.sendRedirect("addApiInfo?Filled=False");
+        }
+        ApiInfoManager apiInfoManager = new ApiInfoManager();
+        Customer customer = SessionManager.getSessionCustomer(request);
+        apiInfoManager.createApiInfo(apiName, apiKey, apiSecret, senderId, customer.getId()).getApi_id();
+        ApiInfoManager apiManager = new ApiInfoManager();
+        List<Pub_API_INFO> apiInfoList = apiManager.getUserApiInfo(customer.getId());
+        SessionManager.setSessionApiList(request, apiInfoList);
+        response.sendRedirect("home");
     }
 
 }

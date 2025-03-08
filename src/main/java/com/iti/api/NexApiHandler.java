@@ -4,7 +4,7 @@
  */
 package com.iti.api;
 
-import com.iti.models.MessageApiInfo;
+import com.iti.models.messages.MessageApiInfo;
 
 /**
  *

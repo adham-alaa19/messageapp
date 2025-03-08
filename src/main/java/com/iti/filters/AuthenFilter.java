@@ -35,11 +35,13 @@ public class AuthenFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
+      
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        String fullURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + httpRequest.getContextPath(); 
         if (!SessionManager.isLoggedIn(httpRequest)) {
-            httpResponse.sendRedirect("login?Logged=False");
-             return;
+            httpResponse.sendRedirect(fullURL+"/login?Logged=False");
+            return;
         }
 
         chain.doFilter(request, response);

@@ -1,4 +1,4 @@
- <%@ page contentType="text/html" pageEncoding="UTF-8" import="com.iti.models.Customer, com.iti.models.Address" %>
+ <%@ page contentType="text/html" pageEncoding="UTF-8" import="com.iti.models.users.Customer, com.iti.models.users.Address" %>
 <%
     // Retrieve the Customer object from the request
     Customer customer = (Customer) request.getAttribute("customer");
@@ -29,7 +29,6 @@
         </div>
     </div>
     <div class="mt-4">
-        <!-- Buttons to edit profile and add new API info -->
         <a href="edit_customer" class="btn btn-primary">Edit Profile</a>
         <a href="addApiInfo" class="btn btn-secondary">Add New API Info</a>
     </div>

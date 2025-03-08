@@ -5,7 +5,7 @@
 package com.iti.pages.admin;
 
 import com.iti.managers.session.SessionManager;
-import com.iti.models.Admin;
+import com.iti.models.users.Admin;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

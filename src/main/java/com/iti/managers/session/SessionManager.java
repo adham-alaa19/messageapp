@@ -4,10 +4,10 @@
  */
 package com.iti.managers.session;
 
-import com.iti.models.Admin;
-import com.iti.models.Customer;
-import com.iti.models.IUser;
-import com.iti.models.Pub_API_INFO;
+import com.iti.models.users.Admin;
+import com.iti.models.users.Customer;
+import com.iti.models.users.IUser;
+import com.iti.models.messages.Pub_API_INFO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
@@ -73,6 +73,7 @@ public class SessionManager {
        
     public static Admin getSessionAdmin(HttpServletRequest request) {
         HttpSession mySession = request.getSession(false);
+        if(mySession==null) return null;
         IUser user = (IUser) mySession.getAttribute("user");
         if (user instanceof Admin) {
             return (Admin) user;
@@ -83,6 +84,7 @@ public class SessionManager {
 
     public static Customer getSessionCustomer(HttpServletRequest request) {
         HttpSession mySession = request.getSession(false);
+        if(mySession==null) return null;
         IUser user = (IUser) mySession.getAttribute("user");
         if ((user instanceof Customer)) {
             return (Customer) user;
@@ -103,6 +105,19 @@ public class SessionManager {
         HttpSession mySession = request.getSession(false);
         Integer id = (Integer) mySession.getAttribute("currentApi");
         return id;
+    }
+    
+    public static void setSessionAttribute(HttpServletRequest request,String key, Object obj) {
+        HttpSession mySession = request.getSession(false);
+        mySession.setAttribute(key, obj);
+    }
+      public static Object getSessionAttribute(HttpServletRequest request,String key) {
+        HttpSession mySession = request.getSession(false);
+        return mySession.getAttribute(key);
+    }
+      
+     public static void startSession(HttpServletRequest request) {
+        request.getSession(true);
     }
     
  

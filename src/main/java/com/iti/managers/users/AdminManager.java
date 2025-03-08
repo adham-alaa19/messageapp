@@ -6,11 +6,11 @@ package com.iti.managers.users;
 
 
 
-import com.iti.models.Customer;
+import com.iti.models.users.Customer;
 import com.iti.database.DB_Handler;
 import com.iti.database.SQL_Condition;
 import com.iti.database.psql.PSQL_Handler;
-import com.iti.models.Message;
+import com.iti.models.messages.Message;
 import java.util.List;
 import java.util.Map;
 
@@ -89,12 +89,7 @@ public int getMessageCount2(int userId) {
 
 public int getMessageCount(int userId) {
     dbh.connect();
-    Customer customer = null;
-    List<Customer> users = (List<Customer>) dbh.readByValue(Customer.class, "customer_id", SQL_Condition.EQUAL, userId);
-        if (users != null && !users.isEmpty()) {
-            customer= users.get(0);
-        }   
-    List<Message> result =  dbh.readByValue(Message.class,"msg_from",SQL_Condition.EQUAL,customer.getMsisdn());
+     List<Message> result =  dbh.readByValue(Message.class,"customer_id",SQL_Condition.EQUAL,userId);
      dbh.disconnect();
     return result.size();
 }

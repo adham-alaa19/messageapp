@@ -5,7 +5,7 @@
 package com.iti.pages.customer;
 
 import com.iti.managers.session.SessionManager;
-import com.iti.models.Customer;
+import com.iti.models.users.Customer;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;

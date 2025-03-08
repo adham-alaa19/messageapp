@@ -1,4 +1,4 @@
- package com.iti.models;
+ package com.iti.models.users;
 
 import java.util.UUID;
 

@@ -1,7 +1,6 @@
-package com.iti.models;
+package com.iti.models.users;
 
 import java.sql.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class Customer implements IUser {
@@ -15,7 +14,6 @@ public class Customer implements IUser {
     private String email;
     private Address address;
     private String msisdn;
-    //private List<MessageApiInfo> apiInfos; 
     private Boolean is_valid;
     
     
@@ -88,12 +86,5 @@ public class Customer implements IUser {
 
     public boolean is_valid() { return is_valid; }
     public void setIs_valid(boolean is_valid) { this.is_valid = is_valid; }
-    
-//        public List<MessageApiInfo> getApiInfos() {
-//        return apiInfos;
-//    }
-//
-//    public void setApiInfos(List<MessageApiInfo> apiInfos) {
-//        this.apiInfos = apiInfos;
-//    }
+ 
 }

@@ -2,7 +2,7 @@ package com.iti.pages.customer;
 
 import com.iti.managers.messages.MessageManager;
 import com.iti.managers.session.SessionManager;
-import com.iti.models.Message;
+import com.iti.models.messages.Message;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

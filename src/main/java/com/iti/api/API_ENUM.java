@@ -12,8 +12,8 @@ public enum API_ENUM {
     TWI("twilio"),
     PLI("plivo"),
     NEX("nexmo"),
-    BUK("bulk"),
-    EML("email");
+    STO("smsto"),
+    EML("mailersend");
     private final String apiName;
 
     API_ENUM(String apiName) {

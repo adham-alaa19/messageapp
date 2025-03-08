@@ -8,65 +8,83 @@ Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this t
 */
 
 
- body {
-            background-color: #f8f9fa;
-        }
+body {
+    background-color: #f8f9fa;
+}
 
-        .card {
-            border-radius: 1rem;
-            background-color: #d1d3d4;
-            border: 1px solid #b0b3b5;
-        }
+.card {
+    border-radius: 1rem;
+    background-color: #d1d3d4;
+    border: 1px solid #b0b3b5;
+}
 
-        .card-header {
-            background-color: #d1d3d4;
-            padding: 10px;
-            border-bottom: 1px solid #b0b3b5;
-            text-align: center;
-            font-weight: bold;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+.card-header {
+    background-color: #d1d3d4;
+    padding: 10px;
+    border-bottom: 1px solid #b0b3b5;
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        .card-body {
-            background-color: #d1d3d4; /* Same grey as card, no white background */
-            padding: 30px;
-        }
+.card-body {
+    background-color: #d1d3d4; /* Same grey as card, no white background */
+    padding: 30px;
+}
 
-        .btn-primary {
-            background-color: #0d6efd;
-            border: 1px solid #0d6efd;
-        }
+.btn-primary {
+    background-color: #0d6efd;
+    border: 1px solid #0d6efd;
+}
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border: 1px solid #0056b3;
-        }
+.btn-primary:hover {
+    background-color: #0056b3;
+    border: 1px solid #0056b3;
+}
 
-        .form-control {
-            background-color: white; /* White background for inputs */
-            border: 1px solid #ced4da; /* Lighter border */
-        }
+.form-control {
+    background-color: white; /* White background for inputs */
+    border: 1px solid #ced4da; /* Lighter border */
+}
 
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #0d6efd;
-        }
+.form-control:focus {
+    box-shadow: none;
+    border-color: #0d6efd;
+}
 
-        .text-center a {
-            color: #0d6efd;
-            text-decoration: none;
-        }
+.text-center a {
+    color: #0d6efd;
+    text-decoration: none;
+}
 
-        .text-center a:hover {
-            color: #0056b3;
-        }
+.text-center a:hover {
+    color: #0056b3;
+}
 
-        /* New CSS for message container */
-        #message-container {
-            background-color: #d1d3d4; /* Grey background like the card */
-            border-radius: 1rem; /* Rounded corners like the card */
-            padding: 15px; /* Padding to give it some space */
-            border: 1px solid #b0b3b5; /* Border similar to the card */
-            margin-top: 10px; /* Add some space above it */
-        }
+/* New CSS for message container */
+#message-container {
+    background-color: #d1d3d4; /* Grey background like the card */
+    border-radius: 1rem; /* Rounded corners like the card */
+    padding: 15px; /* Padding to give it some space */
+    border: 1px solid #b0b3b5; /* Border similar to the card */
+    margin-top: 10px; /* Add some space above it */
+}
+
+
+.form-control.from {
+    background-color: #d1d3d4 !important; /* Same grey as the card */
+    border: 1px solid #b0b3b5; /* Border similar to the card */
+    color: black; /* Ensure text is readable */
+}
+
+.form-control::placeholder {
+    color: #6c757d; /* Slightly darker placeholder for contrast */
+}
+
+.form-control:focus {
+    background-color: #d1d3d4; /* Maintain grey background on focus */
+    border-color: #0d6efd; /* Keep consistent focus effect */
+    box-shadow: none; /* Remove default Bootstrap focus effect */
+}
+
 

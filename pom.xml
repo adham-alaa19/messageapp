@@ -20,25 +20,30 @@
             <scope>provided</scope>
         </dependency>
         
-      <dependency>
-    <groupId>com.twilio.sdk</groupId>
-    <artifactId>twilio</artifactId>
-    <version>9.0.0</version>
-   </dependency>
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>9.0.0</version>
+        </dependency>
         
-    <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>42.5.4</version>
-    </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.5.4</version>
+        </dependency>
     
-    <dependency>
-    <groupId>commons-validator</groupId>
-    <artifactId>commons-validator</artifactId>
-    <version>1.7</version>
-   </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.7</version>
+        </dependency>
 
     
+        <dependency>
+            <groupId>com.mailersend</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>1.0.1</version>
+        </dependency>
 
     </dependencies>
     
@@ -60,18 +65,18 @@
             </plugin>
             
             
-                    <!-- Jetty Plugin for automatic reloading -->
-        <plugin>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-maven-plugin</artifactId>
-            <version>11.0.20</version> <!-- Use the latest version compatible with Jakarta EE 10 -->
-            <configuration>
-                <scanIntervalSeconds>5</scanIntervalSeconds> <!-- Time interval for scanning changes -->
-                <webApp>
-                    <contextPath>/</contextPath> <!-- Context path for your application -->
-                </webApp>
-            </configuration>
-        </plugin>
+            <!-- Jetty Plugin for automatic reloading -->
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>11.0.20</version> <!-- Use the latest version compatible with Jakarta EE 10 -->
+                <configuration>
+                    <scanIntervalSeconds>5</scanIntervalSeconds> <!-- Time interval for scanning changes -->
+                    <webApp>
+                        <contextPath>/</contextPath> <!-- Context path for your application -->
+                    </webApp>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
  

@@ -39,8 +39,9 @@ public class AdminFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+         String fullURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + httpRequest.getContextPath(); 
         if (!SessionManager.isAdminSession(httpRequest)) {
-            httpResponse.sendRedirect("app/customer/home");
+            httpResponse.sendRedirect(fullURL+"/app/customer/home");
             return;
         }
 

@@ -8,9 +8,10 @@ import com.iti.database.DB_Handler;
 import com.iti.database.SQL_Condition;
 import com.iti.database.psql.PSQL_Handler;
 import com.iti.exceptions.CustomerNotFoundException;
-import com.iti.models.Customer;
+import com.iti.models.users.Customer;
 import java.util.List;
 import java.sql.Date;
+import java.util.UUID;
 
 /**
  *
@@ -83,6 +84,20 @@ public class CustomerManager {
         dbHandler.disconnect();
         return !customerList.isEmpty();
     }
+       
+        public Customer getCustomerByPubid(String pubid) {
+            UUID cuid = UUID.fromString(pubid);
+          
+        DB_Handler dbHandler = new PSQL_Handler();
+        Customer customer = null;
+        dbHandler.connect();
+        List<Customer> customerList = (List<Customer>) dbHandler.readByValue(Customer.class, "customer_pub_id", SQL_Condition.EQUAL, cuid);
+        if (!customerList.isEmpty()) 
+            customer = customerList.get(0);
+  
+        dbHandler.disconnect();
+        return customer;
+    }  
 
 }
  

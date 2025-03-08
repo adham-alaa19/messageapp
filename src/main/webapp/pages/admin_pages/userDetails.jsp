@@ -1,11 +1,5 @@
-<%-- 
-    Document   : userDetails
-    Created on : Feb 28, 2025, 5:28:41 PM
-    Author     : DeLL
---%>
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.iti.models.Customer" %>
+ <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.iti.models.users.Customer" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,10 +20,19 @@
                 Customer user = (Customer) request.getAttribute("user");
                 if (user != null) {
             %>
-            <p><strong>ID:</strong> <%= user.getId() %></p>
+            <p><strong>ID:</strong> <%= user.getCustomer_pub_id() %></p>
             <p><strong>First Name:</strong> <%= user.getFirstName() %></p>
             <p><strong>Last Name:</strong> <%= user.getLastName() %></p>
             <p><strong>Email:</strong> <%= user.getEmail() %></p>
+
+            <!-- Hidden Input for User ID inside a form -->
+            <form action="edit_customer" method="get">
+                <input type="hidden" name="uid" value="<%=  user.getCustomer_pub_id() %>">
+                <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-edit"></i> Edit User
+                </button>
+            </form>
+
             <%
                 } else {
             %>
@@ -40,7 +43,7 @@
         </div>
     </div>
 
-    <a href="adminUsers" class="btn btn-secondary mt-3">
+    <a href="viewusers" class="btn btn-secondary mt-3">
         <i class="fas fa-arrow-left"></i> Back to Users List
     </a>
 </div>

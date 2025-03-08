@@ -7,9 +7,11 @@ package com.iti.pages.start;
 import com.iti.database.DB_Handler;
 import com.iti.database.psql.PSQL_Handler;
 import com.iti.exceptions.UserAlreadyExistsException;
+import com.iti.managers.messages.ApiInfoManager;
 import com.iti.managers.session.SessionManager;
 import com.iti.managers.users.UserManager;
-import com.iti.models.Customer;
+import com.iti.models.messages.Pub_API_INFO;
+import com.iti.models.users.Customer;
 import com.iti.utils.UserValidator;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,7 +89,10 @@ public class Register extends HttpServlet {
             Customer customer = userManager.createCustomer(firstName, lastName, birthDate, email, password,
                     job, governorate, district, street, buildingNo, phone);
             SessionManager.startSession(request, customer);
-            response.sendRedirect("verify");
+            ApiInfoManager apiManager = new ApiInfoManager();
+            List<Pub_API_INFO> apiInfoList = apiManager.getUserApiInfo(customer.getId());
+            SessionManager.setSessionApiList(request, apiInfoList);
+            request.getRequestDispatcher("otp-send").forward(request,response);
         } catch (UserAlreadyExistsException ex) {
             Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
            response.sendRedirect("register?Exist=True");

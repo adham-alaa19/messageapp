@@ -1,9 +1,10 @@
  <%@page import="com.iti.managers.session.SessionManager"%>
-<%@page import="com.iti.models.Pub_API_INFO"%>
+<%@page import="com.iti.models.messages.Pub_API_INFO"%>
 <%@ page import="java.util.List"   %> 
 <%
     // Retrieve the list of API names
     List<Pub_API_INFO> apiList = SessionManager.getSessionApiInfoList(request);
+    int curretnApi =  SessionManager.getSessionApiInfo(request);
     boolean isApiListEmpty = (apiList == null || apiList.isEmpty());
 %>
 
@@ -26,9 +27,13 @@
                         <% for (Pub_API_INFO api : apiList) { %>
                         <%
                          String frst5num = api.getSender_id().substring(0, 5);
-                         String apiname = api.getApi_name();
+                         String apiname = api.getApi_name().substring(0, 6);
                         %>
-                            <option value="<%= api.getApi_id() %>"><%= apiname %> :<%= frst5num %></option>
+                       <% if (api.getApi_id()==curretnApi) { %>
+                            <option selected value="<%= api.getApi_id() %>"><%= apiname %> :+<%= frst5num %>..</option> 
+                             <% } else { %>
+                               <option  value="<%= api.getApi_id() %>"><%= apiname %> :+<%= frst5num %>..</option> 
+                                 <% } %>
                         <% } %>
                     <% } else { %>
                         <option value="addApi" disabled selected>Add API Info</option>
