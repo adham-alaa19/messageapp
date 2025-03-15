@@ -15,6 +15,10 @@ public class OTP_Manager {
     {
         apiId=0;
     }
+      public OTP_Manager(int apiId)
+    {
+        this.apiId=apiId;
+    }
     public String generateOTP(int length) {
         SecureRandom random = new SecureRandom();
         StringBuilder otp = new StringBuilder();
@@ -66,7 +70,7 @@ public class OTP_Manager {
         session.setAttribute("otp_expiry", generateExpiryTime(2));
         SendManager sender = new SendManager();
         ApiInfoManager apiManager = new ApiInfoManager();
-        Api_Info apiInfo = apiManager.getApiInfoById(0);
+        Api_Info apiInfo = apiManager.getApiInfoById(apiId);
         sender.sendApiMessage(apiInfo, mail, otp);
         
     }
