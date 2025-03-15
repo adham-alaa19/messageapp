@@ -13,7 +13,7 @@ public class OTP_Manager {
     private final int apiId;
     public OTP_Manager()
     {
-        apiId=0;
+        this(0);
     }
       public OTP_Manager(int apiId)
     {
