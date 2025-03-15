@@ -10,7 +10,7 @@
 
 <nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container-fluid">
-        <a class="navbar-brand" href="home.html">Messager Client</a>
+        <a class="navbar-brand" href="home">Messager Client</a>
         <div class="vertical-line"></div>
 
         <div class="collapse navbar-collapse" id="navbarNav">
