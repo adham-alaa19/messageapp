@@ -19,7 +19,11 @@
             <version>${jakartaee}</version>
             <scope>provided</scope>
         </dependency>
-        
+        <dependency>
+               <groupId>org.mongodb</groupId>
+               <artifactId>mongodb-driver-sync</artifactId>
+               <version>4.9.1</version>
+        </dependency>
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
